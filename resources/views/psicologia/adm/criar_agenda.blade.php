@@ -106,6 +106,7 @@
                 <input type="hidden" name="id_servico" id="id_servico" value="{{ old('id_servico') }}" />
                 <input type="hidden" name="recorrencia" id="recorrencia"/>
                 <input type="hidden" name="status_agend" value="Em aberto"/>
+                <input type="hidden" name="usuario_id" value="{{ session('usuario')->USUARIO }}">
 
                 <!-- PESQUISA POR PACIENTE -->
                 <div class="mb-3 position-relative">

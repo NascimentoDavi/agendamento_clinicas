@@ -17,6 +17,7 @@ class FaesaClinicaAgendamento extends Model
     protected $fillable = [
         'ID_CLINICA',
         'ID_PACIENTE',
+        'ID_USUARIO',
         'ID_SERVICO',
         'DT_AGEND',
         'HR_AGEND_INI',

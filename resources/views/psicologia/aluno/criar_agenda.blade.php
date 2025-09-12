@@ -112,6 +112,8 @@
 
                 <input type="hidden" id="HR_FIM" name="hr_fim" value="{{ old('hr_fim') }}">
 
+                <input type="hidden" id="usuario_id" name="usuario_id" value="{{ session('aluno')[0] }}">
+
                 <div id="session-data"
                    data-aluno='@json(session('aluno'))'
                 ></div>

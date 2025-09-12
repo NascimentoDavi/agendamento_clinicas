@@ -510,6 +510,7 @@ class AgendamentoService
         $novoAgendamento = FaesaClinicaAgendamento::create([
             'ID_CLINICA'         => $dados['ID_CLINICA'] ?? self::ID_CLINICA,
             'ID_PACIENTE'        => $dados['paciente_id'],
+            'ID_USUARIO'         => $dados['usuario_id'],
             'ID_SERVICO'         => $dados['id_servico'],
             'ID_ALUNO'       => $dados['ID_ALUNO'] ?? null,
             'ID_SALA'            => $dados['id_sala_clinica'] ?? null,

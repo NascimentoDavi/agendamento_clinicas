@@ -223,6 +223,7 @@ class AgendamentoController extends Controller
         // VALIDACAO DOS DADOS
         $validatedData = $request->validate([
             'paciente_id' => 'required|integer',
+            'usuario_id' => 'required|string',
             'id_servico' => 'required|integer',
             'dia_agend' => 'required|date',
             'hr_ini' => 'required',
@@ -283,6 +284,7 @@ class AgendamentoController extends Controller
         // VALIDAÇÃO INICIAL
         $validatedData = $request->validate([
             'paciente_id' => 'required|integer',
+            'usuario_id' => 'required|string',
             'id_servico' => 'required|integer',
             'dia_agend' => 'required|date',
             'hr_ini' => 'required',
@@ -306,6 +308,7 @@ class AgendamentoController extends Controller
         try {
             $resultado = $this->agendamentoService->criarAgendamentos([
                 'paciente_id' => $validatedData['paciente_id'],
+                'usuario_id' => $validatedData['usuario_id'],
                 'id_servico' => $validatedData['id_servico'],
                 'dia_agend' => $validatedData['dia_agend'],
                 'hr_ini' => $validatedData['hr_ini'],
