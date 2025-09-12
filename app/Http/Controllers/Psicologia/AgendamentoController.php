@@ -367,7 +367,13 @@ class AgendamentoController extends Controller
     public function editAgendamentoaluno($id, FaesaClinicaAgendamento $agendamentoModel)
     {
         $agendamento = $agendamentoModel->with('paciente', 'servico', 'aluno')->findOrFail($id);
-        return view('psicologia.aluno.editar_agendamento', compact('agendamento'));
+
+        $idUsuario = session('aluno')[0];
+        if($idUsuario === $agendamento->ID_USUARIO){
+            return view('psicologia.aluno.editar_agendamento', compact('agendamento'));
+        } else {
+            return redirect()->route('alunoConsultarAgendamentos-GET')->with('error', 'Você não tem permissão para editar este agendamento.');
+        }        
     }
 
     // CONTROLLER DE EDIÇÃO DE AGENDAMENTO - Utiliza Injeção de Dependência
