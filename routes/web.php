@@ -212,25 +212,23 @@ Route::get('/aluno/logout', function() {
 })->name('alunoLogout');
 
 
-
-
-
-// ROTAS DE PROFESSOR
-Route::get('/professor/login', function() {
-    if(session()->has('professor')) {
-        return view('psicologia.professor.menu_agenda');
-    } else {
-        return view('psicologia.professor.login_professor');
-    }
-})->name('professorLoginGet');
-
-Route::post('/professor/login', function() {
-    if(session()->has('professor')) {
-        return view('psicologia.professor.menu_agenda');
-    }
-})->name('professorLoginPost');
-
 Route::middleware([AuthProfessorMiddleware::class])->group( function() {
+    
+    // ROTAS DE PROFESSOR
+    Route::get('/professor/login', function() {
+        if(session()->has('professor')) {
+            return view('psicologia.professor.menu_agenda');
+        } else {
+            return view('psicologia.professor.login_professor');
+        }
+    })->name('professorLoginGet');
+
+    Route::post('/professor/login', function() {
+        if(session()->has('professor')) {
+            return view('psicologia.professor.menu_agenda');
+        }
+    })->name('professorLoginPost');
+
     Route::match(['get', 'post'], '/professor', function() {
         return view('psicologia.professor.menu_agenda');
     })->name('professorMenu');
