@@ -359,7 +359,7 @@
     let excluirButton = '';
     if (userId == ag.ID_USUARIO && status === 'Agendado') {
         excluirButton = `
-            <form action="/psicologia/agendamento/${ag.ID_AGENDAMENTO}" method="POST" onsubmit="return confirm('Confirma a exclusão deste agendamento?');">
+            <form action="/aluno/agendamento/${ag.ID_AGENDAMENTO}" method="POST" onsubmit="return confirm('Confirma a exclusão deste agendamento?');">
                 <input type="hidden" name="_token" value="${csrfToken}">
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-danger flex-grow-1" title="Excluir">

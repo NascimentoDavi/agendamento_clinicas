@@ -470,6 +470,23 @@ class AgendamentoController extends Controller
         return redirect()->back()->with('success', 'Agendamento excluído com sucesso');
     }
 
+    public function AlunoDeleteAgendamento(Request $request, $id, FaesaClinicaAgendamento $agendamentoModel)
+    {
+        $agendamento = $agendamentoModel->with('paciente', 'servico', 'aluno')->findOrFail($id);
+
+        $idUsuario = session('aluno')[0];
+        if($idUsuario === $agendamento->ID_USUARIO){
+            $agendamento->STATUS_AGEND = "Excluido";
+            $agendamento->save();
+        } else {
+            // Volta para a página anterior
+            return redirect()->back()->with('error', 'Você esqueceu que é pobre? Tu não tem acesso aqui não');
+        } 
+
+        // Volta para a página anterior
+        return redirect()->back()->with('success', 'Agendamento excluído com sucesso');
+    }
+
     // VERIFICA CONFLITOS DE AGENDAMENTO
     private function existeConflitoAgendamento(
         int $idClinica, 
