@@ -18,29 +18,19 @@ use App\Http\Middleware\CheckClinicaMiddleware;
 use App\Http\Middleware\AuthAlunoMiddleware;
 
 // PÁGINA DE LOGIN - SELEÇÃO DE PSICOLOGIA OU ODONTOLOGIA
-Route::get('/', function () {
-    if (session()->has('usuario')) {
-        return view('login');
-    }
 
-    // $usuario = session('usuario');
-    // session(['last_clinic_route' => 'menu_agenda_psicologia']);
-    return view('login', compact('usuario'));
-})->name('menu_agenda_psicologia');
 
-Route::get('/', function () {
-    if (session()->has('usuario')) {
-        return redirect()->route('menu_agenda_psicologia');
-    }
-    return view('login');
-})->name('loginGET');
 
 
 Route::middleware([AuthMiddleware::class])->group(function () {
 
+    Route::get('/', function () {
+        return redirect()->route('loginGET');
+    })->name('loginRoot');
+
     Route::get('/login', function () {
         if (session()->has('usuario')) {
-            return redirect('/');
+            return redirect()->route('menu_agenda_psicologia');
         }
         return view('login');
     })->name('loginGET');
