@@ -320,65 +320,80 @@
                         }
 
                         agendamentos.forEach(ag => {
-                            const paciente = ag.paciente ? ag.paciente.NOME_COMPL_PACIENTE : '-';
-                            const aluno = ag.aluno ? ag.aluno.NOME_COMPL : (ag.ID_ALUNO || '-');
-                            const servico = ag.servico ? ag.servico.SERVICO_CLINICA_DESC : '-';
-                            const data = ag.DT_AGEND ? new Date(ag.DT_AGEND).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : '-';
-                            const horaIni = ag.HR_AGEND_INI ? ag.HR_AGEND_INI.substring(0, 5) : '-';
-                            const horaFim = ag.HR_AGEND_FIN ? ag.HR_AGEND_FIN.substring(0, 5) : '-';
-                            const local = ag.LOCAL ?? '-';
-                            const status = ag.STATUS_AGEND || '-';
-                            const reagendamento = ag.ID_AGEND_REMARCADO != null ? 'Sim' : 'Não';
+    const paciente = ag.paciente ? ag.paciente.NOME_COMPL_PACIENTE : '-';
+    const aluno = ag.aluno ? ag.aluno.NOME_COMPL : (ag.ID_ALUNO || '-');
+    const servico = ag.servico ? ag.servico.SERVICO_CLINICA_DESC : '-';
+    const data = ag.DT_AGEND ? new Date(ag.DT_AGEND).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : '-';
+    const horaIni = ag.HR_AGEND_INI ? ag.HR_AGEND_INI.substring(0, 5) : '-';
+    const horaFim = ag.HR_AGEND_FIN ? ag.HR_AGEND_FIN.substring(0, 5) : '-';
+    const local = ag.LOCAL ?? '-';
+    const status = ag.STATUS_AGEND || '-';
+    const reagendamento = ag.ID_AGEND_REMARCADO != null ? 'Sim' : 'Não';
 
-                            const statusMap = {
-                                'Agendado': { color: 'text-success', icon: 'bi-calendar-check' },
-                                'Cancelado': { color: 'text-danger', icon: 'bi-calendar-x' },
-                                'Presente': { color: 'text-primary', icon: 'bi-check2-circle' },
-                                'Finalizado': { color: 'text-secondary', icon: 'bi-calendar2-check-fill' },
-                                'Remarcado': { color: 'text-warning', icon: 'bi-arrow-repeat' }
-                            };
-                            const statusInfo = statusMap[status] || { color: 'text-muted', icon: 'bi-question-circle' };
+    const statusMap = {
+        'Agendado': { color: 'text-success', icon: 'bi-calendar-check' },
+        'Cancelado': { color: 'text-danger', icon: 'bi-calendar-x' },
+        'Presente': { color: 'text-primary', icon: 'bi-check2-circle' },
+        'Finalizado': { color: 'text-secondary', icon: 'bi-calendar2-check-fill' },
+        'Remarcado': { color: 'text-warning', icon: 'bi-arrow-repeat' }
+    };
+    const statusInfo = statusMap[status] || { color: 'text-muted', icon: 'bi-question-circle' };
 
-                            // Botão Editar condicional
-                            let editarButton = '';
-                            if (userId == ag.ID_USUARIO) {
-                                editarButton = `
-                                    <a href="/aluno/agendamento/${ag.ID_AGENDAMENTO}/editar" class="btn btn-warning flex-grow-1" title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                `;
-                            } else {
-                                editarButton = `
-                                    <a href="javascript:void(0);" class="btn btn-warning flex-grow-1 disabled" title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                `;
-                            }
+    // Botão Editar condicional
+    let editarButton = '';
+    if (userId == ag.ID_USUARIO) {
+        editarButton = `
+            <a href="/aluno/agendamento/${ag.ID_AGENDAMENTO}/editar" class="btn btn-warning flex-grow-1" title="Editar">
+                <i class="bi bi-pencil"></i>
+            </a>
+        `;
+    } else {
+        editarButton = `
+            <a href="javascript:void(0);" class="btn btn-warning flex-grow-1 disabled" title="Editar">
+                <i class="bi bi-pencil"></i>
+            </a>
+        `;
+    }
 
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${paciente}</td>
-                                <td>${aluno}</td>
-                                <td>${servico}</td>
-                                <td>${data}</td>
-                                <td>${horaIni}</td>
-                                <td>${horaFim}</td>
-                                <td>${local}</td>
-                                <td class="fw-bold ${statusInfo.color}"><i class="bi ${statusInfo.icon} me-1"></i>${status}</td>
-                                <td>${reagendamento}</td>
-                                <td class="d-flex flex-nowrap gap-1 agendamento-actions">
-                                    ${editarButton}
-                                    <form action="/psicologia/agendamento/${ag.ID_AGENDAMENTO}" method="POST" onsubmit="return confirm('Confirma a exclusão deste agendamento?');">
-                                        <input type="hidden" name="_token" value="${csrfToken}">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="btn btn-danger flex-grow-1" title="Excluir">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            `;
-                            agendamentosTbody.appendChild(row);
-                        });
+    // Botão Excluir condicional
+    let excluirButton = '';
+    if (userId == ag.ID_USUARIO && status === 'Agendado') {
+        excluirButton = `
+            <form action="/psicologia/agendamento/${ag.ID_AGENDAMENTO}" method="POST" onsubmit="return confirm('Confirma a exclusão deste agendamento?');">
+                <input type="hidden" name="_token" value="${csrfToken}">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-danger flex-grow-1" title="Excluir">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </form>
+        `;
+    } else {
+        excluirButton = `
+            <button type="button" class="btn btn-danger flex-grow-1 disabled" title="Excluir">
+                <i class="bi bi-trash"></i>
+            </button>
+        `;
+    }
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${paciente}</td>
+        <td>${aluno}</td>
+        <td>${servico}</td>
+        <td>${data}</td>
+        <td>${horaIni}</td>
+        <td>${horaFim}</td>
+        <td>${local}</td>
+        <td class="fw-bold ${statusInfo.color}"><i class="bi ${statusInfo.icon} me-1"></i>${status}</td>
+        <td>${reagendamento}</td>
+        <td class="d-flex flex-nowrap gap-1 agendamento-actions">
+            ${editarButton}
+            ${excluirButton}
+        </td>
+    `;
+    agendamentosTbody.appendChild(row);
+});
+
                     })
                     .catch(error => {
                         console.error('Erro ao buscar agendamentos:', error);
