@@ -28,19 +28,6 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         return redirect()->route('loginGET');
     })->name('loginRoot');
 
-    Route::get('/login', function () {
-        if (session()->has('usuario')) {
-            return redirect()->route('menu_agenda_psicologia');
-        }
-        return view('login');
-    })->name('loginGET');
-
-    Route::post('/login', [LoginController::class, 'login'])->name('loginPOST');
-
-    Route::get('/logout', function () {
-        session()->forget('usuario');
-        return redirect()->route('loginGET');
-    })->name('logout');
 });
 
 
@@ -52,6 +39,20 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 Route::middleware([AuthMiddleware::class])
     ->prefix('psicologia')
     ->group(function () {
+
+        Route::get('/login', function () {
+            if (session()->has('usuario')) {
+                return redirect()->route('menu_agenda_psicologia');
+            }
+            return view('login');
+        })->name('loginGET');
+
+        Route::post('/login', [LoginController::class, 'login'])->name('loginPOST');
+
+        Route::get('/logout', function () {
+            session()->forget('usuario');
+            return redirect()->route('loginGET');
+        })->name('logout');
 
         //----- ROTAS GERAIS E RELATÓRIOS -----//
         Route::get('/', function () {
@@ -161,7 +162,7 @@ Route::middleware([AuthMiddleware::class])
 | ROTAS DA ÁREA DO ALUNO
 |--------------------------------------------------------------------------
 */
-Route::middleware([AuthAlunoMiddleware::class])
+Route::middleware([AuthMiddleware::class])
     ->prefix('aluno')
     ->group(function () {
 
@@ -209,7 +210,7 @@ Route::middleware([AuthAlunoMiddleware::class])
 | ROTAS DA ÁREA DO PROFESSOR
 |--------------------------------------------------------------------------
 */
-Route::middleware([AuthProfessorMiddleware::class])
+Route::middleware([AuthMiddleware::class])
     ->prefix('professor')
     ->group(function () {
 
