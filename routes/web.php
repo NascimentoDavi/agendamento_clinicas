@@ -30,39 +30,11 @@ Route::get('/', function () {
 
 Route::get('/', function () {
     if (session()->has('usuario')) {
-        $usuario = session('usuario');
-        $clinicas = $usuario->pluck('ID_CLINICA')->toArray();
-        $sit_usuario = session('SIT_USUARIO');
-
-        if (in_array(1, $clinicas) && in_array(2, $clinicas)) {
-            // SESSÃO AINDA EXISTE - TEM ACESSO ÀS DUAS CLÍNICAS
-            $lastRoute = session('last_clinic_route');
-
-            if ($lastRoute) {
-                return redirect()->route($lastRoute);
-            } else {
-                // ABRE TELA DE SELEÇÃO - Se não tem LastRoute gravado, abre tela para seleção de clínica que deseja acessar
-                return redirect()->route('selecionar-clinica-get');
-            }
-        } elseif (in_array(1, $clinicas)) {
-            return redirect()->route('menu_agenda_psicologia');
-        } elseif (in_array(2, $clinicas)) {
-            return redirect()->route('menu_agenda_odontologia');
-        } else {
-            session()->flush();
-            return redirect()->route('loginGET')->with('error', 'Usuário sem acesso a clínicas.');
-        }
+        return redirect()->route('menu_agenda_psicologia');
     }
     return view('login');
 })->name('loginGET');
 
-Route::get('/selecionar-clinica', function () {
-    if (session()->has('usuario')) {
-        return view('selecionar_clinica');
-    } else {
-        return redirect()->route('loginGET');
-    }
-})->name('selecionar-clinica-get');
 
 Route::middleware([AuthMiddleware::class])->group(function () {
 
@@ -79,8 +51,6 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         session()->forget('usuario');
         return redirect()->route('loginGET');
     })->name('logout');
-
-    Route::post('/selecionar-clinica', [ClinicaController::class, 'selecionarClinica'])->name('selecionar-clinica-post');
 });
 
 Route::middleware([AuthMiddleware::class, CheckClinicaMiddleware::class])
