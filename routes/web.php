@@ -161,29 +161,25 @@ Route::middleware([AuthMiddleware::class, CheckClinicaMiddleware::class])
 });
 
 
-
-
-// ROTAS DE aluno
-Route::get('/aluno/login', function() {
-    if(session()->has('aluno')) {
-        return redirect()->route('alunoAgenda');
-    } else {
-        return view('psicologia.aluno.login_aluno');
-    }
-})->name('alunoLoginGet');
-
-Route::get('/aluno', function() {
-    if(session()->has('aluno')) {
-        return view(view: 'psicologia.aluno.menu_agenda');
-    } else {
-        return redirect()->route('alunoLoginGet');
-    }
-})->name('alunoAgenda');
-
 Route::middleware([AuthAlunoMiddleware::class])->group(function () {
+
+    // ROTAS DE aluno
+    Route::get('/aluno/login', function() {
+        if(session()->has('aluno')) {
+            return redirect()->route('alunoAgenda');
+        } else {
+            return view('psicologia.aluno.login_aluno');
+        }
+    })->name('alunoLoginGet');
+
+    Route::get('/aluno', function() {
+        if(session()->has('aluno')) {
+            return view(view: 'psicologia.aluno.menu_agenda');
+        }
+    })->name('alunoAgenda');
+    
     Route::post('/aluno/login', function() {
         return redirect()->route('alunoAgenda');
-        // return view('psicologia.aluno.menu_agenda');
     })->name('alunoLoginPost');
 
     Route::get('/aluno/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendaraluno']);
