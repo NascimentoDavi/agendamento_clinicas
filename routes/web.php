@@ -190,6 +190,8 @@ Route::middleware([AuthAlunoMiddleware::class])->group(function () {
 
     Route::get('/aluno/agendamento/{id}/editar', [AgendamentoController::class, 'editAgendamentoaluno'])->name('agendamentoaluno.edit');
 
+    Route::delete('/aluno/agendamento/{id}', [AgendamentoController::class, 'AlunoDeleteAgendamento'])->name('aluno.agendamento.delete');
+
     Route::put('/aluno/agendamento', [AgendamentoController::class, 'updateAgendamento'])->name('aluno.agendamento.update');
 
     Route::get('/aluno/pesquisar-disciplina', [ServicoController::class, 'getDisciplinaServico'])->name('alunoGetDisciplina');
