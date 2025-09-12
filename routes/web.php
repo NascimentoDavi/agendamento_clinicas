@@ -18,57 +18,19 @@ use App\Http\Middleware\CheckClinicaMiddleware;
 use App\Http\Middleware\AuthAlunoMiddleware;
 
 // PÁGINA DE LOGIN - SELEÇÃO DE PSICOLOGIA OU ODONTOLOGIA
-Route::get('/', function () {
-    if (session()->has('usuario')) {
-        return view('login');
-    }
 
-    // $usuario = session('usuario');
-    // session(['last_clinic_route' => 'menu_agenda_psicologia']);
-    return view('login', compact('usuario'));
-})->name('menu_agenda_psicologia');
 
-Route::get('/', function () {
-    if (session()->has('usuario')) {
-        $usuario = session('usuario');
-        $clinicas = $usuario->pluck('ID_CLINICA')->toArray();
-        $sit_usuario = session('SIT_USUARIO');
 
-        if (in_array(1, $clinicas) && in_array(2, $clinicas)) {
-            // SESSÃO AINDA EXISTE - TEM ACESSO ÀS DUAS CLÍNICAS
-            $lastRoute = session('last_clinic_route');
-
-            if ($lastRoute) {
-                return redirect()->route($lastRoute);
-            } else {
-                // ABRE TELA DE SELEÇÃO - Se não tem LastRoute gravado, abre tela para seleção de clínica que deseja acessar
-                return redirect()->route('selecionar-clinica-get');
-            }
-        } elseif (in_array(1, $clinicas)) {
-            return redirect()->route('menu_agenda_psicologia');
-        } elseif (in_array(2, $clinicas)) {
-            return redirect()->route('menu_agenda_odontologia');
-        } else {
-            session()->flush();
-            return redirect()->route('loginGET')->with('error', 'Usuário sem acesso a clínicas.');
-        }
-    }
-    return view('login');
-})->name('loginGET');
-
-Route::get('/selecionar-clinica', function () {
-    if (session()->has('usuario')) {
-        return view('selecionar_clinica');
-    } else {
-        return redirect()->route('loginGET');
-    }
-})->name('selecionar-clinica-get');
 
 Route::middleware([AuthMiddleware::class])->group(function () {
 
+    Route::get('/', function () {
+        return redirect()->route('loginGET');
+    })->name('loginRoot');
+
     Route::get('/login', function () {
         if (session()->has('usuario')) {
-            return redirect('/');
+            return redirect()->route('menu_agenda_psicologia');
         }
         return view('login');
     })->name('loginGET');
@@ -79,8 +41,6 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         session()->forget('usuario');
         return redirect()->route('loginGET');
     })->name('logout');
-
-    Route::post('/selecionar-clinica', [ClinicaController::class, 'selecionarClinica'])->name('selecionar-clinica-post');
 });
 
 Route::middleware([AuthMiddleware::class, CheckClinicaMiddleware::class])
@@ -201,29 +161,25 @@ Route::middleware([AuthMiddleware::class, CheckClinicaMiddleware::class])
 });
 
 
-
-
-// ROTAS DE aluno
-Route::get('/aluno/login', function() {
-    if(session()->has('aluno')) {
-        return redirect()->route('alunoAgenda');
-    } else {
-        return view('psicologia.aluno.login_aluno');
-    }
-})->name('alunoLoginGet');
-
-Route::get('/aluno', function() {
-    if(session()->has('aluno')) {
-        return view(view: 'psicologia.aluno.menu_agenda');
-    } else {
-        return redirect()->route('alunoLoginGet');
-    }
-})->name('alunoAgenda');
-
 Route::middleware([AuthAlunoMiddleware::class])->group(function () {
+
+    // ROTAS DE aluno
+    Route::get('/aluno/login', function() {
+        if(session()->has('aluno')) {
+            return redirect()->route('alunoAgenda');
+        } else {
+            return view('psicologia.aluno.login_aluno');
+        }
+    })->name('alunoLoginGet');
+
+    Route::get('/aluno', function() {
+        if(session()->has('aluno')) {
+            return view(view: 'psicologia.aluno.menu_agenda');
+        }
+    })->name('alunoAgenda');
+    
     Route::post('/aluno/login', function() {
         return redirect()->route('alunoAgenda');
-        // return view('psicologia.aluno.menu_agenda');
     })->name('alunoLoginPost');
 
     Route::get('/aluno/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendaraluno']);
