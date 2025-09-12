@@ -25,35 +25,19 @@ class AuthMiddleware
             'loginGET',
             'loginPOST',
             'logout',
-            'alunoLoginGet',
-            'alunoLoginPost',
-            'alunoLogout',
-            'professorLoginGet',
-            'professorLoginPost',
-            'professorLogout',
         ];
 
         // Se a rota estiver liberada, segue
         if (in_array($routeName, $rotasLiberadas, true)) {
-            // Se for uma rota de POST de login, processa autenticação aqui
-            if (in_array($routeName, ['loginPOST','alunoLoginPost','professorLoginPost'], true)) {
+            if (in_array($routeName, ['loginPOST'], true)) {
                 return $this->processarLogin($request, $routeName, $next);
             }
             return $next($request);
         }
 
         // Já logado?
-        if (session()->has('usuario') || session()->has('aluno') || session()->has('professor')) {
+        if (session()->has('usuario')) {
             return $next($request);
-        }
-
-        // Não logado: redireciona para o login correto por prefixo
-        if (str_starts_with($routeName, 'aluno')) {
-            return redirect()->route('alunoLoginGet');
-        }
-
-        if (str_starts_with($routeName, 'professor')) {
-            return redirect()->route('professorLoginGet');
         }
 
         return redirect()->route('loginGET');
@@ -69,7 +53,7 @@ class AuthMiddleware
             'password' => $request->input('senha'),
         ];
 
-        // Chama API (única; ajuste se houver endpoints diferentes por perfil)
+        // Chama API
         $response = $this->getApiData($credentials);
 
         if (!$response['success']) {
@@ -77,32 +61,15 @@ class AuthMiddleware
             return redirect()->back()->with('error', $response['message'] ?? 'Credenciais Inválidas');
         }
 
-        // Valida usuário no banco
+        // VALIDA USUARIO NO BANCO
         $validacao = $this->validarUsuario($credentials);
 
         if (is_null($validacao)) {
             return redirect()->back()->with('error', 'Usuário Inativo');
-        }
-
-        // Seta a sessão conforme a rota de login utilizada
-        if ($routeName === 'alunoLoginPost') {
-            if (($validacao->TIPO ?? null) === 'aluno') {
-                session(['aluno' => $validacao]);
-            } else {
-                return redirect()->back()->with('error', 'Usuário deve ser aluno');
-            }
-        } elseif ($routeName === 'professorLoginPost') {
-            if (($validacao->TIPO ?? null) === 'Professor') {
-                session(['professor' => $validacao]);
-            } else {
-                return redirect()->back()->with('error', 'Usuário deve ser Professor');
-            }
-        } else { // loginPOST padrão (recepção/usuário geral)
-            // Se quiser checar recepção especificamente, troque a condição abaixo
+        } else {
             session(['usuario' => $validacao]);
         }
 
-        // Autenticado, segue o fluxo normal
         return $next($request);
     }
 
@@ -118,7 +85,7 @@ class AuthMiddleware
             $http = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Authorization' => $apiKey,
-            ])->timeout(5);
+            ])->timeout(15);
 
             $resp = $http->post($apiUrl, $credentials);
 
@@ -142,7 +109,7 @@ class AuthMiddleware
      * Valida usuário ativo no banco.
      * Retorna o modelo ou null.
      */
-    private function validarUsuario(array $credentials): ?FaesaClinicaUsuarioGeral
+    private function validarUsuario(array $credentials): ?FaesaClinicaUsuario
     {
         $username = $credentials['username'] ?? null;
 
@@ -150,25 +117,8 @@ class AuthMiddleware
             return null;
         }
 
-        return FaesaClinicaUsuarioGeral::where('USUARIO', $username)
-            ->where('STATUS', 'Ativo')
-            ->first();
-    }
-
-    /**
-     * Exemplo de validação de ADM (mantida sua ideia).
-     */
-    private function validarADM(array $credentials)
-    {
-        $usuario = $credentials['username'] ?? null;
-        if (!$usuario) {
-            return null;
-        }
-
-        $usuarioADM = FaesaClinicaUsuario::where('ID_USUARIO_CLINICA', $usuario)
+        return FaesaClinicaUsuario::where('ID_USUARIO_CLINICA', $username)
             ->where('SIT_USUARIO', 'Ativo')
-            ->get();
-
-        return $usuarioADM->isNotEmpty() ? $usuarioADM : null;
+            ->first();
     }
 }
