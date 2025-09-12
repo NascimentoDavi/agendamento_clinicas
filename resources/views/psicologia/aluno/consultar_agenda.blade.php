@@ -90,7 +90,12 @@
             <div class="col-12 shadow-lg shadow-dark p-4 bg-body-tertiary rounded">
                 
                 <form id="search-form" class="w-100 mb-4">
+
+                    <input type="hidden" name="usuario_id" id="usuario_id" value="{{ session('aluno')[0] }}">
+
                     <div class="row g-3">
+
+                        <!-- NOME/CPF DO PACIENTE -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
@@ -101,6 +106,7 @@
                             </div>
                         </div>
 
+                        <!-- NOME/MATRICULA ALUNO -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person-workspace"></i></span>
@@ -111,6 +117,7 @@
                             </div>
                         </div>
 
+                        <!-- DATA -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
@@ -121,6 +128,7 @@
                             </div>
                         </div>
 
+                        <!-- HORÁRIO DE INÍCIO -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
@@ -131,6 +139,7 @@
                             </div>
                         </div>
 
+                        <!-- HORÁRIO FINAL -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-clock"></i></span>
@@ -141,6 +150,7 @@
                             </div>
                         </div>
 
+                        <!-- STATUS DO AGENDAMENTO -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-list-check"></i></span>
@@ -158,6 +168,7 @@
                             </div>
                         </div>
 
+                        <!-- SERVICO -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
@@ -168,6 +179,7 @@
                             </div>
                         </div>
 
+                        <!-- LOCAL -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
@@ -178,6 +190,7 @@
                             </div>
                         </div>
 
+                        <!-- SEARCH BUTTON E CLEAN BUTTON -->
                         <div class="col-12 col-lg-auto d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-search"></i> Pesquisar
@@ -269,6 +282,11 @@
             const limitSelect = document.getElementById('limit-select');
             const contadorRegistros = document.getElementById('contador-registros');
 
+            // Pega o user_id da sessão e token CSRF do Blade
+            const userId = document.getElementById('usuario_id').value;
+            console.log(userId);
+            const csrfToken = '{{ csrf_token() }}';
+
             function getFilters() {
                 const formData = new FormData(searchForm);
                 const params = new URLSearchParams(formData);
@@ -280,8 +298,12 @@
                 const params = getFilters();
                 const url = `/aluno/consultar-agendamento/buscar?${params.toString()}`;
 
-                // Adiciona um feedback visual de carregamento
-                agendamentosTbody.innerHTML = `<tr><td colspan="13" class="text-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div> Carregando...</td></tr>`;
+                // Feedback de carregamento
+                agendamentosTbody.innerHTML = `<tr><td colspan="13" class="text-center">
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div> Carregando...
+                </td></tr>`;
 
                 fetch(url)
                     .then(response => {
@@ -307,7 +329,7 @@
                             const local = ag.LOCAL ?? '-';
                             const status = ag.STATUS_AGEND || '-';
                             const reagendamento = ag.ID_AGEND_REMARCADO != null ? 'Sim' : 'Não';
-                            
+
                             const statusMap = {
                                 'Agendado': { color: 'text-success', icon: 'bi-calendar-check' },
                                 'Cancelado': { color: 'text-danger', icon: 'bi-calendar-x' },
@@ -316,6 +338,22 @@
                                 'Remarcado': { color: 'text-warning', icon: 'bi-arrow-repeat' }
                             };
                             const statusInfo = statusMap[status] || { color: 'text-muted', icon: 'bi-question-circle' };
+
+                            // Botão Editar condicional
+                            let editarButton = '';
+                            if (userId == ag.ID_USUARIO) {
+                                editarButton = `
+                                    <a href="/aluno/agendamento/${ag.ID_AGENDAMENTO}/editar" class="btn btn-warning flex-grow-1" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                `;
+                            } else {
+                                editarButton = `
+                                    <a href="javascript:void(0);" class="btn btn-warning flex-grow-1 disabled" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                `;
+                            }
 
                             const row = document.createElement('tr');
                             row.innerHTML = `
@@ -329,11 +367,13 @@
                                 <td class="fw-bold ${statusInfo.color}"><i class="bi ${statusInfo.icon} me-1"></i>${status}</td>
                                 <td>${reagendamento}</td>
                                 <td class="d-flex flex-nowrap gap-1 agendamento-actions">
-                                    <a href="/aluno/agendamento/${ag.ID_AGENDAMENTO}/editar" class="btn btn-warning flex-grow-1" title="Editar"><i class="bi bi-pencil"></i></a>
+                                    ${editarButton}
                                     <form action="/psicologia/agendamento/${ag.ID_AGENDAMENTO}" method="POST" onsubmit="return confirm('Confirma a exclusão deste agendamento?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger flex-grow-1" title="Excluir"><i class="bi bi-trash"></i></button>
+                                        <input type="hidden" name="_token" value="${csrfToken}">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-danger flex-grow-1" title="Excluir">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </form>
                                 </td>
                             `;
@@ -355,7 +395,6 @@
 
             document.getElementById('btnClearFilters').addEventListener('click', () => {
                 searchForm.reset();
-                // Limpa também os campos do Flatpickr
                 flatpickrInstances.forEach(instance => instance.clear());
                 carregarAgendamentos();
             });
@@ -363,7 +402,8 @@
             // Carrega a lista ao abrir a página
             carregarAgendamentos();
         });
-    </script>
+</script>
+
     
     <script>
         flatpickr.localize(flatpickr.l10ns.pt);
