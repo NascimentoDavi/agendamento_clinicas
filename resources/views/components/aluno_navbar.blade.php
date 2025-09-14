@@ -195,7 +195,7 @@
 
         <!-- LOGOUT -->
         <li class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
-            <a href="/aluno/logout" class="link-logout d-flex align-items-center gap-2 p-1">
+            <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-1">
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </a>
@@ -235,7 +235,7 @@
 
         <!-- LOGOUT -->
         <li class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
-            <a href="/aluno/logout" class="link-logout d-flex align-items-center gap-2 p-1">
+            <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-1">
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </a>

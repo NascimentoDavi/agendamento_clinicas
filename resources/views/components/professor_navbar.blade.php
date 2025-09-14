@@ -193,7 +193,7 @@
 
         <!-- LOGOUT -->
         <li class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
-            <a href="/professor/logout" class="link-logout d-flex align-items-center gap-2 p-1">
+            <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-1">
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </a>
@@ -224,7 +224,7 @@
             </li>
             <!-- LOGOUT -->
             <li class="list-group-item p-0 overflow-hidden ">
-                <a href="/psicologia/logout" class="link-logout d-flex align-items-center gap-2 p-2">
+                <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-2">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </li>
