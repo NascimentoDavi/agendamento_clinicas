@@ -10,114 +10,109 @@ use App\Models\FaesaClinicaUsuario;
 
 class AuthMiddleware
 {
+    /**
+     * Mapa de configuração para cada tipo de usuário.
+     * A chave 'prefix' define a área permitida para cada um.
+     */
+    private array $userTypeMap = [
+        'usuario' => [
+            'session' => 'usuario',
+            'loginRoute' => 'loginGET',
+            'prefix' => 'psicologia', // Apenas rotas com prefixo /psicologia
+        ],
+        'aluno' => [
+            'session' => 'aluno',
+            'loginRoute' => 'loginGET',
+            'prefix' => 'aluno', // Apenas rotas com prefixo /aluno
+        ],
+        'professor' => [
+            'session' => 'professor',
+            'loginRoute' => 'loginGET',
+            'prefix' => 'professor', // Apenas rotas com prefixo /professor
+        ],
+    ];
+
     public function handle(Request $request, Closure $next)
     {
-        $routeName  = optional($request->route())->getName();
-        $prefix     = $request->route()?->getPrefix();
+        $routeName = $request->route()?->getName();
+        $routePrefix = $request->route()?->getPrefix();
+        $rotasPublicas = ['loginGET', 'loginPOST', 'logout'];
 
-        if (!$routeName) {
-            return $next($request);
-        }
+        // --- LÓGICA PARA USUÁRIOS LOGADOS (AUTORIZAÇÃO) ---
 
-        // Regras por tipo de usuário
-        $map = [
-            'usuario' => [
-                'session' => 'usuario',
-                'rotasLiberadas' => ['loginGET', 'loginPOST', 'logout'],
-                'loginRoute' => 'loginGET',
-            ],
-            'aluno' => [
-                'session' => 'aluno',
-                'rotasLiberadas' => ['alunoLoginGet', 'alunoLoginPost', 'alunoLogout'],
-                'loginRoute' => 'alunoLoginGet',
-            ],
-            'professor' => [
-                'session' => 'professor',
-                'rotasLiberadas' => ['professorLoginGet', 'professorLoginPost', 'professorLogout'],
-                'loginRoute' => 'professorLoginGet',
-            ],
-        ];
+        $activeSessionType = null;
+        if (session()->has('usuario'))   $activeSessionType = 'usuario';
+        elseif (session()->has('aluno'))     $activeSessionType = 'aluno';
+        elseif (session()->has('professor')) $activeSessionType = 'professor';
 
-        // Detecta o contexto (pelo prefixo da rota ou pelo nome)
-        $tipo = $this->detectarTipo($routeName, $prefix, $map);
+        if ($activeSessionType) {
+            $expectedPrefix = $this->userTypeMap[$activeSessionType]['prefix'];
 
-        if (!$tipo) {
-            return $next($request);
-        }
 
-        $sessionKey    = $map[$tipo]['session'];
-        $rotasLiberadas = $map[$tipo]['rotasLiberadas'];
-        $loginRoute     = $map[$tipo]['loginRoute'];
-
-        // Se já tem sessão válida
-        if (session()->has($sessionKey)) {
-            return $next($request);
-        }
-
-        // Se for rota de login POST
-        if ($this->isLoginPost($tipo, $routeName)) {
-            return $this->processarLogin($tipo, $request, $next, $sessionKey, $loginRoute);
-        }
-
-        // Se a rota não estiver liberada e não tiver sessão → redireciona
-        if (!in_array($routeName, $rotasLiberadas)) {
-            return redirect()->route($loginRoute);
-        }
-
-        return $next($request);
-    }
-
-    private function detectarTipo(?string $routeName, ?string $prefix, array $map): ?string
-    {
-        foreach ($map as $tipo => $dados) {
-            foreach ($dados['rotasLiberadas'] as $rota) {
-                if (str_starts_with($routeName, $tipo) || $routeName === $rota || $prefix === $tipo) {
-                    return $tipo;
-                }
+            // Permite acesso irrestrito às rotas públicas (como o logout)
+            if (in_array($routeName, $rotasPublicas)) {
+                return $next($request);
             }
+
+            $routePrefix = ltrim($routePrefix, '/');
+            // Se o prefixo da rota atual NÃO for o esperado para o tipo de usuário...
+            if ($routePrefix !== $expectedPrefix) {
+                // ...desloga o usuário e o redireciona para a tela de login com um erro.
+                abort(403);
+            }
+
+            // Se o prefixo for o correto, permite o acesso.
+            return $next($request);
         }
-        return null;
+
+        // --- LÓGICA PARA VISITANTES (AUTENTICAÇÃO) ---
+
+        if ($routeName === 'loginPOST') {
+            $tipo = $request->input('tipo_usuario');
+            if (!$tipo || !array_key_exists($tipo, $this->userTypeMap)) {
+                return redirect()->route('loginGET')->with('error', 'Tipo de usuário inválido.');
+            }
+            return $this->processarLogin($tipo, $request, $next);
+        }
+
+        if (in_array($routeName, $rotasPublicas)) {
+            return $next($request);
+        }
+
+        return redirect()->route('loginGET');
     }
 
-    private function isLoginPost(string $tipo, string $routeName): bool
+    private function processarLogin(string $tipo, Request $request, Closure $next)
     {
-        return match ($tipo) {
-            'usuario'   => $routeName === 'loginPOST',
-            'aluno'     => $routeName === 'alunoLoginPost',
-            'professor' => $routeName === 'professorLoginPost',
-            default     => false,
-        };
-    }
+        $sessionKey = $this->userTypeMap[$tipo]['session'];
+        $loginRoute = $this->userTypeMap[$tipo]['loginRoute'];
 
-    private function processarLogin(string $tipo, Request $request, Closure $next, string $sessionKey, string $loginRoute)
-    {
         $credentials = [
             'username' => $request->input('login'),
             'password' => $request->input('senha'),
         ];
 
+        // 1. Autenticação via API
         $response = $this->getApiData($tipo, $credentials);
-
         if (!$response['success']) {
-            session()->flush();
             return redirect()->route($loginRoute)->with('error', $response['message'] ?? 'Credenciais Inválidas');
         }
 
-        // Validação específica por tipo
-        $validacao = match ($tipo) {
+        // 2. Validação no banco de dados
+        $dadosSessao = match ($tipo) {
             'usuario'   => $this->validarUsuario($credentials),
             'aluno'     => $this->validarAluno($credentials),
             'professor' => $this->validarProfessor($credentials),
-            default     => null,
         };
 
-        if (!$validacao) {
-            return redirect()->route($loginRoute)->with('error', ucfirst($tipo) . ' sem permissão de acesso');
+        if (!$dadosSessao) {
+            return redirect()->route($loginRoute)->with('error', ucfirst($tipo) . ' sem permissão de acesso ao sistema.');
         }
 
-        // Grava na sessão
-        session([$sessionKey => $validacao]);
+        // 3. Sucesso! Grava os dados na sessão
+        session([$sessionKey => $dadosSessao]);
 
+        // Passa a requisição para a próxima etapa (o controller)
         return $next($request);
     }
 
@@ -136,28 +131,26 @@ class AuthMiddleware
         };
 
         try {
+            if (empty($apiUrl) || empty($apiKey)) {
+                return ['success' => false, 'message' => 'API não configurada corretamente no sistema.'];
+            }
+
             $resp = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Authorization' => $apiKey,
             ])->timeout(10)->post($apiUrl, $credentials);
 
-            if ($resp->successful()) {
-                return ['success' => true, 'data' => $resp->json()];
-            }
+            return $resp->successful()
+                ? ['success' => true, 'data' => $resp->json()]
+                : ['success' => false, 'message' => $resp->json('message') ?? 'Falha na autenticação'];
 
-            return [
-                'success' => false,
-                'message' => $resp->json('message') ?? 'Falha na autenticação',
-            ];
         } catch (\Throwable $e) {
             return [
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Erro de comunicação: ' . $e->getMessage(),
             ];
         }
     }
-
-    // ====================== Validações =======================
 
     private function validarUsuario(array $credentials): ?FaesaClinicaUsuario
     {

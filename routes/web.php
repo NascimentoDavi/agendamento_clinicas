@@ -22,14 +22,22 @@ use App\Http\Middleware\AuthAlunoMiddleware;
 | ROTAS DE AUTENTICAÇÃO GERAL
 |--------------------------------------------------------------------------
 */
-Route::middleware([AuthMiddleware::class])->group(function () {
+
+Route::middleware([AuthMiddleware::class])
+    ->group(function () {
 
     Route::get('/', function () {
         return redirect()->route('loginGET');
     })->name('loginRoot');
 
-});
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginGET');
 
+    Route::post('/login', [LoginController::class, 'handleLogin'])->name('loginPOST');
+
+    Route::get('/logout', [LoginController::class, 'handleLogout'])->name('logout');
+
+
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -40,28 +48,14 @@ Route::middleware([AuthMiddleware::class])
     ->prefix('psicologia')
     ->group(function () {
 
-        Route::get('/login', function () {
-            if (session()->has('usuario')) {
-                return redirect()->route('menu_agenda_psicologia');
-            }
-            return view('login');
-        })->name('loginGET');
-
-        Route::post('/login', [LoginController::class, 'login'])->name('loginPOST');
-
-        Route::get('/logout', function () {
-            session()->forget('usuario');
-            return redirect()->route('loginGET');
-        })->name('logout');
-
         //----- ROTAS GERAIS E RELATÓRIOS -----//
         Route::get('/', function () {
             $usuario = session('usuario');
-            return view('psicologia.adm/menu_agenda', compact('usuario'));
+            return view('psicologia.adm.menu_agenda', compact('usuario'));
         })->name('menu_agenda_psicologia');
 
         Route::get('/relatorios-agendamento', function () {
-            return view('psicologia.adm/relatorios_agendamento');
+            return view('psicologia.adm.relatorios_agendamento');
         })->name('relatorio_psicologia');
 
         //----- PACIENTES -----//
@@ -166,24 +160,12 @@ Route::middleware([AuthMiddleware::class])
     ->prefix('aluno')
     ->group(function () {
 
-    //----- AUTENTICAÇÃO E MENU -----//
-    Route::get('/login', function () {
-        return session()->has('aluno')
-            ? redirect()->route('alunoAgenda')
-            : view('psicologia.aluno.login_aluno');
-    })->name('alunoLoginGet');
-    Route::post('/login', function () {
-        return redirect()->route('alunoAgenda');
-    })->name('alunoLoginPost');
+    //----- MENU -----//
     Route::get('/', function () {
         if (session()->has('aluno')) {
             return view('psicologia.aluno.menu_agenda');
         }
     })->name('alunoAgenda');
-    Route::get('/logout', function () {
-        session()->forget('aluno');
-        return redirect()->route('alunoLoginGet');
-    })->name('alunoLogout');
 
     //----- AGENDAMENTOS (Visão do Aluno) -----//
     Route::get('/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendaraluno']);
@@ -214,25 +196,10 @@ Route::middleware([AuthMiddleware::class])
     ->prefix('professor')
     ->group(function () {
 
-    //----- AUTENTICAÇÃO E MENU -----//
-    Route::get('/login', function () {
-        return session()->has('professor')
-            ? view('psicologia.professor.menu_agenda')
-            : view('psicologia.professor.login_professor');
-    })->name('professorLoginGet');
-    Route::post('/login', function () {
-        if (session()->has('professor')) {
-            return view('psicologia.professor.menu_agenda');
-        }
-    })->name('professorLoginPost');
-    Route::match(['get', 'post'], '/', function () {
+    //----- MENU -----//
+    Route::get('/', function () {
         return view('psicologia.professor.menu_agenda');
     })->name('professorMenu');
-    Route::get('/logout', function () {
-        session()->forget('professor');
-        return redirect()->route('professorLoginGet');
-    })->name('professorLogout');
-
 
     //----- CONSULTAS (Visão do Professor) -----//
     Route::get('/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendarProfessor'])->name('getAgendamentosForCalendarProfessor');
