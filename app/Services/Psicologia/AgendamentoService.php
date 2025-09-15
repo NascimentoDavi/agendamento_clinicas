@@ -584,11 +584,23 @@ class AgendamentoService
     }
 
     // ADICIONA MENSAGEM DE MOTIVO DE CANCELAMENTO AO AGENDAMENTO
-    public function addMensagemCancelamento($id, String $msg)
+    public function addMensagemCancelamento($id, string $msg, $checkPagamento = null, $valorPagamento = null)
     {
         $agendamento = FaesaClinicaAgendamento::findOrFail($id);
+
+        // Atualiza status e mensagem de cancelamento
         $agendamento->STATUS_AGEND = "Cancelado";
         $agendamento->MENSAGEM = $msg;
+
+        // Atualiza status de pagamento e valor, se enviados
+        if (!is_null($checkPagamento)) {
+            $agendamento->STATUS_PAG = $checkPagamento;
+        }
+
+        if (!is_null($valorPagamento)) {
+            $agendamento->VALOR_PAG = $valorPagamento;
+        }
+
         $agendamento->save();
 
         return $agendamento;

@@ -419,8 +419,8 @@
 
         const content = document.getElementById('text-cancelamento').value;
         const eventId = this.getAttribute('data-event-id');
-        const checkPagamento = document.getElementById('modalCheckPagamento');
-        const valorPagamento = document.getElementById('modalValorPagamento');
+        const checkPagamento = document.getElementById('modalCheckPagamento').checked ? 'S' : 'N';
+        const valorPagamento = document.getElementById('modalValorPagamento').value;
 
         // CAOS NÃO INSIRA MOTIVO
         if (!content) {

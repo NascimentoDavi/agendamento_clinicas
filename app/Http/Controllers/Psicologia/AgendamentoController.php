@@ -614,7 +614,13 @@ class AgendamentoController extends Controller
     // ADICIONA MENSAGEM DE MOTIVO DE CANCELAMENTO AO AGENDAMENTO
     public function addMensagemCancelamento(Request $request)
     {
-        $this->agendamentoService->addMensagemCancelamento($request->id, $request->mensagem);
+        $this->agendamentoService->addMensagemCancelamento(
+            $request->id,
+            $request->mensagem,
+            $request->checkPagamento,
+            $request->valorPagamento
+        );
+
         return response()->json([
             'success' => true,
             'message' => 'Mensagem de Cancelamento adicionada com sucesso!'
