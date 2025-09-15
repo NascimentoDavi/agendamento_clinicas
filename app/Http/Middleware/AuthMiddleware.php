@@ -57,7 +57,7 @@ class AuthMiddleware
             $routePrefix = ltrim($routePrefix, '/');
             // Se o prefixo da rota atual NÃO for o esperado para o tipo de usuário...
             if ($routePrefix !== $expectedPrefix) {
-                // ...desloga o usuário e o redireciona para a tela de login com um erro.
+                //Gera erro 403
                 abort(403);
             }
 
