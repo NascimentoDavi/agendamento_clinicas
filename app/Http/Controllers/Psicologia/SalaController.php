@@ -7,35 +7,48 @@ use App\Http\Controllers\Controller;
 use App\Models\FaesaClinicaAgendamento;
 use App\Models\FaesaClinicaServico;
 use App\Models\FaesaClinicaSala;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class SalaController extends Controller
 {
     public function createSala(Request $request)
     {
-        $idClinica = $request->input('id_clinica');
-
         $validatedData = $request->validate([
-            'DESCRICAO' => 'required|string|max:255|unique:FAESA_CLINICA_SALA,DESCRICAO',
-            'DISCIPLINA' => 'string|max:10'
+            'DESCRICAO' => 'required|string|max:255',
+            'DISCIPLINA' => 'nullable|string|max:10'
         ], [
             'DESCRICAO.required' => 'A descrição da Sala é obrigatória',
-            'DESCRICAO.unique' => 'Já existe uma sala com essa descrição.',
             'DESCRICAO.string' => 'A descrição da sala não pode ser numérica',
             'DESCRICAO.max' => 'A descrição da sala não pode ter mais de 255 caracteres',
             'DISCIPLINA.string' => 'A Disciplina deve conter o código da Disciplina',
         ]);
 
+        // Verifica se já existe uma sala com o mesmo nome e status diferente de 'Excluido'
+        $existeSalaAtiva = FaesaClinicaSala::where('DESCRICAO', $validatedData['DESCRICAO'])
+            ->where(function ($query) {
+                $query->whereNull('SIT_SALA')
+                    ->orWhere('SIT_SALA', '<>', 'Excluido');
+            })
+            ->exists();
+
+
+        if ($existeSalaAtiva) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['DESCRICAO' => 'Já existe uma sala com essa descrição.']);
+        }
+
+        // Se passou na checagem, cria a sala
         $sala = new FaesaClinicaSala();
         $sala->DESCRICAO = $validatedData['DESCRICAO'];
-        $sala->DISCIPLINA = $validatedData['DISCIPLINA'];
+        $sala->DISCIPLINA = $validatedData['DISCIPLINA'] ?? null;
+        $sala->SIT_SALA = 'Ativo'; // ou 'S', depende do seu padrão
         $sala->save();
 
         return redirect()->route('salas_psicologia')->with('success', 'Sala criada com sucesso!');
     }
-
 
     public function getSala(Request $request)
     {
@@ -73,22 +86,15 @@ class SalaController extends Controller
 
         try {
             $validatedData = validator($requestData, [
-                'DESCRICAO' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('FAESA_CLINICA_SALA', 'DESCRICAO')->ignore($id, 'ID_SALA_CLINICA'),
-                ],
+                'DESCRICAO' => 'required|string|max:255',
                 'DISCIPLINA' => 'nullable|string|max:10',
                 'ATIVO' => 'required|in:S,N',
             ], [
                 'DESCRICAO.required' => 'A descrição da Sala é obrigatória',
-                'DESCRICAO.unique' => 'Já existe uma sala com essa descrição.',
                 'DESCRICAO.string' => 'A descrição da sala não pode ser numérica',
                 'DESCRICAO.max' => 'A descrição da sala não pode ter mais de 255 caracteres',
                 'DISCIPLINA.string' => 'A Disciplina deve conter o código da Disciplina',
             ])->validate();
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -97,6 +103,24 @@ class SalaController extends Controller
         }
 
         $sala = FaesaClinicaSala::findOrFail($id);
+
+        // Verifica se já existe outra sala com o mesmo nome e que não está excluída
+        $existeSalaAtiva = FaesaClinicaSala::where('DESCRICAO', $validatedData['DESCRICAO'])
+            ->where(function ($query) {
+                $query->whereNull('SIT_SALA')
+                    ->orWhere('SIT_SALA', '<>', 'Excluido');
+            })
+            ->where('ID_SALA_CLINICA', '<>', $id) // ignora a própria sala
+            ->exists();
+
+        if ($existeSalaAtiva) {
+            return response()->json([
+                'success' => false,
+                'errors' => ['DESCRICAO' => ['Já existe uma sala com essa descrição.']]
+            ], 422);
+        }
+
+        // Atualiza a sala
         $sala->update($validatedData);
 
         return response()->json([
@@ -104,6 +128,7 @@ class SalaController extends Controller
             'message' => 'Sala atualizada com sucesso!'
         ]);
     }
+
 
     public function deleteSala($id): JsonResponse
     {
