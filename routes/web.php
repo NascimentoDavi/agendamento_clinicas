@@ -161,7 +161,7 @@ Route::middleware([AuthMiddleware::class])
 });
 
 
-Route::middleware([AuthAlunoMiddleware::class])->group(function () {
+Route::middleware([AuthMiddleware::class])->group(function () {
 
     //----- MENU -----//
     Route::get('/', function () {
