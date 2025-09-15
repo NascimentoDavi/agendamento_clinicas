@@ -40,6 +40,7 @@
            overflow-y: auto;
         }
     </style>
+    
 </head>
 
 <body class="bg-body-secondary">
@@ -67,29 +68,44 @@
     <div id="modal-alert-container" class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1056;"></div>
 
     <div class="container ms-3 me-3 mw-100">
+
         <div class="row">
-             <x-page-title>
+
+            <x-page-title>
             </x-page-title>
+            
             <div class="col-12 shadow-lg shadow-dark p-4 bg-body-tertiary rounded">
                 
-                <form class="needs-validation" action="{{ route('criarSala-Psicologia') }}" method="POST" novalidate>
+                <form class="needs-validation" action="{{ route('criarSala-Psicologia') }}" method="POST">
+
                     @csrf
+
+                    <!-- ID CLINICA -->
                     <input type="hidden" name="ID_CLINICA" value="1">
                     
                     <div class="row g-3">
+
+                        <!-- DESCRIÇÃO DA SALA -->
                         <div class="col-md-6">
                             <label for="nome-sala" class="form-label">Descrição da Sala</label>
                             <input type="text" id="nome-sala" name="DESCRICAO" class="form-control" value="{{ old('DESCRICAO', request('DESCRICAO')) }}" required>
                         </div>
+
+                        <!-- DISCIPLINA -->
                         <div class="col-md-6">
                             <label for="disciplina-sala" class="form-label">Disciplina</label>
+
                             <select name="DISCIPLINA" id="disciplina-sala" class="form-select">
                                 <option value="" selected>Carregando...</option>
                             </select>
+
                         </div>
+
+                        <!-- SUBMIT BUTTON -->
                         <div class="col-12 text-end">
                             <button class="btn btn-primary" type="submit"><i class="bi bi-check-circle me-2"></i>Salvar Sala</button>
                         </div>
+                        
                     </div>
                 </form>
 
@@ -98,28 +114,42 @@
                 <div class="text-center mb-4">
                     <h2 class="fs-4 mb-0">Consulta e Edição de Salas</h2>
                 </div>
+
+                <!-- CAMPO DE BUSCA POR SALAS CADASTRADAS -->
                 <div class="mb-3">
                     <input type="search" id="search-sala" class="form-control" placeholder="Buscar sala por nome..." />
                 </div>
+
                 <div class="table-responsive border rounded" style="max-height: 50vh; overflow-y: auto;">
+
                     <table class="table table-hover table-bordered align-middle mb-0">
+
                         <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+
                             <tr>
                                 <th>Descrição</th>
                                 <th>Disciplina</th>
                                 <th>Status</th>
                                 <th>Ações</th>
                             </tr>
+
                         </thead>
+
                         <tbody id="salas-tbody">
                             <tr><td colspan="4" class="text-center">Carregando...</td></tr>
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
+            
         </div>
+
     </div>
     
+    <!-- MODAL DE EDIÇÃO DE SALA -->
     <div class="modal fade" id="editarSalaModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -205,23 +235,19 @@
                     }
                 }
                 
-                // Verifica se já existe uma instância do Tom Select para este elemento
                 let tomSelect = tomSelectInstances[selectId];
 
                 if (tomSelect) {
-                    // Se já existe, limpa as opções e o valor atual
                     tomSelect.clear();
                     tomSelect.clearOptions();
                 }
 
-                // Adiciona as opções formatadas para o Tom Select
                 const options = disciplinasCache.map(d => ({
                     value: d.DISCIPLINA,
                     text: `${d.DISCIPLINA} - ${d.NOME}`
                 }));
                 
                 if (!tomSelect) {
-                    // Se não existe, cria uma nova instância do Tom Select
                     tomSelect = new TomSelect(selectElement, {
                         options: options,
                         placeholder: 'Selecione ou pesquise...',
@@ -316,16 +342,22 @@
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                     body: JSON.stringify(data)
                 })
+
                 .then(res => res.json().then(body => ({ ok: res.ok, body })))
-               .then(({ ok, body }) => {
-                    if (!ok) throw new Error(body.message || 'Erro ao salvar.');
-                    editarSalaModal.hide();
-                    showModalAlert(body.message, 'success');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
-                })
-                .catch(err => showModalAlert(err.message));
+
+                .then(({ ok, body }) => {
+    if (!ok) throw new Error(body.message || 'Erro ao salvar.');
+
+    editarSalaModal.hide();
+
+    showModalAlert(body.message, 'success');
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 2000);
+})
+.catch(err => showModalAlert(err.message, 'danger'));
+
             });
             
             document.getElementById('btn-deletar-sala').addEventListener('click', () => {
