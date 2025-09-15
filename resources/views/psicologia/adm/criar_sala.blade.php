@@ -319,14 +319,8 @@
                 .then(res => res.json().then(body => ({ ok: res.ok, body })))
                .then(({ ok, body }) => {
                     if (!ok) throw new Error(body.message || 'Erro ao salvar.');
-
-                    // Fecha o modal
                     editarSalaModal.hide();
-
-                    // Mostra a mensagem de sucesso
                     showModalAlert(body.message, 'success');
-
-                    // Atualiza a tabela sem recarregar ou recarrega após 2 segundos
                     setTimeout(() => {
                         window.location.reload();
                     }, 2000);

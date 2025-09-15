@@ -382,7 +382,7 @@ class AgendamentoController extends Controller
             'ID_AGENDAMENTO' => 'required|integer|exists:faesa_clinica_agendamento,ID_AGENDAMENTO',
             'ID_SERVICO'     => 'required|integer',
             'ID_PACIENTE'    => 'required|integer',
-            'ID_ALUNO'   => 'nullable|integer',
+            'ID_ALUNO'       => 'nullable|integer',
             'ID_SALA'        => 'nullable|integer',
             'DT_AGEND'       => 'required|date_format:Y-m-d',
             'HR_AGEND_INI'   => 'required|date_format:H:i',
@@ -391,11 +391,49 @@ class AgendamentoController extends Controller
             'VALOR_AGEND'    => 'nullable|string',
             'OBSERVACOES'    => 'nullable|string',
         ], [
-            'ID_SERVICO.required'  => 'É obrigatório informar o serviço para prosseguir com a edição',
-            'ID_PACIENTE.required' => 'É obrigatório informar o paciente para prosseguir com a edição',
-            'HR_AGEND_FIN.after'   => 'O horário final deve ser posterior ao horário inicial.',
-            'ID_AGENDAMENTO.exists' => 'O agendamento que você está tentando editar não foi encontrado.',
+            // ID_AGENDAMENTO
+            'ID_AGENDAMENTO.required' => 'O identificador do agendamento é obrigatório.',
+            'ID_AGENDAMENTO.integer'  => 'O identificador do agendamento deve ser um número inteiro.',
+            'ID_AGENDAMENTO.exists'   => 'O agendamento que você está tentando editar não foi encontrado.',
+
+            // ID_SERVICO
+            'ID_SERVICO.required' => 'É obrigatório informar o serviço para prosseguir com a edição.',
+            'ID_SERVICO.integer'  => 'O serviço informado deve ser um número inteiro.',
+
+            // ID_PACIENTE
+            'ID_PACIENTE.required' => 'É obrigatório informar o paciente para prosseguir com a edição.',
+            'ID_PACIENTE.integer'  => 'O paciente informado deve ser um número inteiro.',
+
+            // ID_ALUNO
+            'ID_ALUNO.integer' => 'O aluno informado deve ser um número inteiro.',
+
+            // ID_SALA
+            'ID_SALA.integer' => 'A sala informada deve ser um número inteiro.',
+
+            // DT_AGEND
+            'DT_AGEND.required'    => 'A data do agendamento é obrigatória.',
+            'DT_AGEND.date_format' => 'A data do agendamento deve estar no formato YYYY-MM-DD.',
+
+            // HR_AGEND_INI
+            'HR_AGEND_INI.required'    => 'O horário inicial do agendamento é obrigatório.',
+            'HR_AGEND_INI.date_format' => 'O horário inicial deve estar no formato HH:MM.',
+
+            // HR_AGEND_FIN
+            'HR_AGEND_FIN.required'    => 'O horário final do agendamento é obrigatório.',
+            'HR_AGEND_FIN.date_format' => 'O horário final deve estar no formato HH:MM.',
+            'HR_AGEND_FIN.after'       => 'O horário final deve ser posterior ao horário inicial.',
+
+            // STATUS_AGEND
+            'STATUS_AGEND.required' => 'O status do agendamento é obrigatório.',
+            'STATUS_AGEND.string'   => 'O status do agendamento deve ser um texto válido.',
+
+            // VALOR_AGEND
+            'VALOR_AGEND.string' => 'O valor do agendamento deve ser um texto válido.',
+
+            // OBSERVACOES
+            'OBSERVACOES.string' => 'As observações devem ser um texto válido.',
         ]);
+
 
         try {
             $agendamento = $this->agendamentoService->atualizarAgendamento($validatedData);

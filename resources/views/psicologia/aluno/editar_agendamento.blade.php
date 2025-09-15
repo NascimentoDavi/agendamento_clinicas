@@ -20,6 +20,24 @@
         .card-footer { font-size: 0.8rem; color: #6c757d; }
         /* Esconde o select original do TomSelect até ser inicializado */
         .ts-hidden-accessible { display: none; }
+
+            .shadow-dark {
+            box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
+        }
+        @keyframes slideDownFadeOut {
+            0%   { transform: translate(-50%, -100%); opacity: 0; }
+            10%  { transform: translate(-50%, 0); opacity: 1; }
+            90%  { transform: translate(-50%, 0); opacity: 1; }
+            100% { transform: translate(-50%, -100%); opacity: 0; }
+        }
+        .animate-alert {
+            animation: slideDownFadeOut 5s ease forwards;
+            z-index: 1050;
+        }
+        .modal-body {
+           max-height: 75vh;
+           overflow-y: auto;
+        }
     </style>
 
 </head>
@@ -30,20 +48,20 @@
     @include('components.aluno_navbar')
 
     <!-- EM CASO DE ERROS -->
-    @if ($errors->any())
-        <div id="alert-error" class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;">
+    @if($errors->any())
+        <div class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3 animate-alert" style="max-width: 90%;">
             <strong>Ops!</strong> Corrija os itens abaixo:
             <ul class="mb-0 mt-1 list-unstyled">
-                @foreach ($errors->all() as $error)
+                @foreach($errors->all() as $error)
                     <li><i class="bi bi-exclamation-circle-fill me-1"></i> {{ $error }}</li>
                 @endforeach
             </ul>
         </div>
     @endif
 
-    @if (session('error'))
-        <div id="alert-session-error" class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;">
-            <strong>Atenção:</strong> {{ session('error') }}
+    @if(session('success'))
+        <div class="alert alert-success text-center shadow position-fixed top-0 start-50 translate-middle-x mt-3 animate-alert">
+            {{ session('success') }}
         </div>
     @endif
 

@@ -553,10 +553,8 @@ class AgendamentoService
 
                 if (in_array($servicoDesc, ['triagem', 'plantão'])) {
                     $dataFim = $dataInicio->copy()->addWeeks(2);
-                } elseif ($servicoDesc === 'psicodiagnóstico') {
+                } elseif (in_array($servicoDesc, ['psicodiagnóstico','psicoterapia', 'educação'])) {
                     $dataFim = $dataInicio->copy()->addMonths(6);
-                } elseif (in_array($servicoDesc, ['psicoterapia', 'educação'])) {
-                    $dataFim = $dataInicio->copy()->addYear();
                 }
                 // ADICIONADO: Lógica para recorrência personalizada via tabela de serviço
                 elseif (isset($servico->TEMPO_RECORRENCIA_MESES) && $servico->TEMPO_RECORRENCIA_MESES > 0) {

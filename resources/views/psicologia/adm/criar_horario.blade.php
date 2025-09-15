@@ -292,18 +292,33 @@
                 
                 fetch(`/psicologia/horarios/atualizar/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(data)
                 })
-                .then(res => res.json().then(body => ({ ok: res.ok, body })))
-                .then(({ ok, body }) => {
-                    if (!ok) throw new Error(body.message || 'Erro ao salvar.');
-                    editarHorarioModal.hide();
-                    showModalAlert(body.message, 'success'); 
+                .then(res => {
+                    if (!res.ok) return res.json().then(body => { throw body; });
+                    return res.json();
                 })
-                .catch(err => showModalAlert(err.message));
+                .then(body => {
+                    if (body.message) {
+                        editarHorarioModal.hide();
+                        showModalAlert(body.message, 'success');
+                        carregarHorarios();
+                    }
+                })
+                .catch(err => {
+                    if (err.errors) {
+                        const mensagens = Object.values(err.errors).flat().join('<br>');
+                        showModalAlert(mensagens, 'danger');
+                    } else {
+                        showModalAlert(err.message || 'Ocorreu um erro inesperado.', 'danger');
+                    }
+                });
             });
-            
             document.getElementById('btn-deletar-horario').addEventListener('click', () => {
                 if (!confirm('Tem certeza que deseja excluir este horário? Esta ação não pode ser desfeita.')) return;
                 const id = formEditarHorario.querySelector('#edit-horario-id').value;
