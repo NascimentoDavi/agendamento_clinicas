@@ -86,37 +86,38 @@ class SalaController extends Controller
 
         try {
             $validatedData = validator($requestData, [
-                'DESCRICAO' => 'required|string|max:255',
-                'DISCIPLINA' => 'nullable|string|max:10',
-                'ATIVO' => 'required|in:S,N',
+                'DESCRICAO'   => 'required|string|max:255',
+                'DISCIPLINA'  => 'nullable|string|max:10',
+                'ATIVO'       => 'required|in:S,N',
             ], [
-                'DESCRICAO.required' => 'A descrição da Sala é obrigatória',
-                'DESCRICAO.string' => 'A descrição da sala não pode ser numérica',
-                'DESCRICAO.max' => 'A descrição da sala não pode ter mais de 255 caracteres',
-                'DISCIPLINA.string' => 'A Disciplina deve conter o código da Disciplina',
+                'DESCRICAO.required' => 'A descrição da sala é obrigatória',
+                'DESCRICAO.string'   => 'A descrição da sala não pode ser numérica',
+                'DESCRICAO.max'      => 'A descrição da sala não pode ter mais de 255 caracteres',
+                'DISCIPLINA.string'  => 'A Disciplina deve conter o código da Disciplina',
             ])->validate();
         } catch (ValidationException $e) {
+            $firstError = collect($e->errors())->flatten()->first();
+
             return response()->json([
                 'success' => false,
-                'errors' => $e->errors()
+                'message' => $firstError,
             ], 422);
         }
 
         $sala = FaesaClinicaSala::findOrFail($id);
 
-        // Verifica se já existe outra sala com o mesmo nome e que não está excluída
         $existeSalaAtiva = FaesaClinicaSala::where('DESCRICAO', $validatedData['DESCRICAO'])
             ->where(function ($query) {
                 $query->whereNull('SIT_SALA')
                     ->orWhere('SIT_SALA', '<>', 'Excluido');
             })
-            ->where('ID_SALA_CLINICA', '<>', $id) // ignora a própria sala
+            ->where('ID_SALA_CLINICA', '<>', $id)
             ->exists();
 
         if ($existeSalaAtiva) {
             return response()->json([
                 'success' => false,
-                'errors' => ['DESCRICAO' => ['Já existe uma sala com essa descrição.']]
+                'message' => 'Já existe uma sala com essa descrição.',
             ], 422);
         }
 
@@ -125,10 +126,9 @@ class SalaController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Sala atualizada com sucesso!'
+            'message' => 'Sala atualizada com sucesso!',
         ]);
     }
-
 
     public function deleteSala($id): JsonResponse
     {
