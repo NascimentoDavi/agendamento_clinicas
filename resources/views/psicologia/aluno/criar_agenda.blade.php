@@ -259,7 +259,7 @@
             const servicoId = document.querySelector('#disciplina').value;
             if (!servicoId) return callback(); // não carrega se não houver serviço
             
-            const url = `/psicologia/pesquisar-local?search=${encodeURIComponent(query)}&servico=${encodeURIComponent(servicoId)}`;
+            const url = `/aluno/pesquisar-local?search=${encodeURIComponent(query)}&servico=${encodeURIComponent(servicoId)}`;
             fetch(url)
                 .then(r => r.json())
                 .then(json => callback(json))
