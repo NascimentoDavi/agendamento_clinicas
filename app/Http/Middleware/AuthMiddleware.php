@@ -5,8 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\DB;
-use App\Models\FaesaClinicaUsuario;
+use App\Models\FaesaClinicaUsuarioGeral; // ajuste conforme seu modelo real
+use App\Models\FaesaClinicaUsuario;      // usado no validarADM
 
 class AuthMiddleware
 {
@@ -116,7 +116,10 @@ class AuthMiddleware
         return $next($request);
     }
 
-    private function getApiData(string $tipo, array $credentials): array
+    /**
+     * Chamada à API de autenticação.
+     */
+    private function getApiData(array $credentials): array
     {
         $apiUrl = match ($tipo) {
             'usuario'   => config('services.faesa.api_url'),
@@ -138,7 +141,9 @@ class AuthMiddleware
             $resp = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Authorization' => $apiKey,
-            ])->timeout(10)->post($apiUrl, $credentials);
+            ])->timeout(15);
+
+            $resp = $http->post($apiUrl, $credentials);
 
             return $resp->successful()
                 ? ['success' => true, 'data' => $resp->json()]
@@ -155,7 +160,10 @@ class AuthMiddleware
     private function validarUsuario(array $credentials): ?FaesaClinicaUsuario
     {
         $username = $credentials['username'] ?? null;
-        if (!$username) return null;
+
+        if (!$username) {
+            return null;
+        }
 
         return FaesaClinicaUsuario::where('ID_USUARIO_CLINICA', $username)
             ->where('SIT_USUARIO', 'Ativo')

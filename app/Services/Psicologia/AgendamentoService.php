@@ -553,10 +553,8 @@ class AgendamentoService
 
                 if (in_array($servicoDesc, ['triagem', 'plantão'])) {
                     $dataFim = $dataInicio->copy()->addWeeks(2);
-                } elseif ($servicoDesc === 'psicodiagnóstico') {
+                } elseif (in_array($servicoDesc, ['psicodiagnóstico','psicoterapia', 'educação'])) {
                     $dataFim = $dataInicio->copy()->addMonths(6);
-                } elseif (in_array($servicoDesc, ['psicoterapia', 'educação'])) {
-                    $dataFim = $dataInicio->copy()->addYear();
                 }
                 // ADICIONADO: Lógica para recorrência personalizada via tabela de serviço
                 elseif (isset($servico->TEMPO_RECORRENCIA_MESES) && $servico->TEMPO_RECORRENCIA_MESES > 0) {
@@ -584,11 +582,23 @@ class AgendamentoService
     }
 
     // ADICIONA MENSAGEM DE MOTIVO DE CANCELAMENTO AO AGENDAMENTO
-    public function addMensagemCancelamento($id, String $msg)
+    public function addMensagemCancelamento($id, string $msg, $checkPagamento = null, $valorPagamento = null)
     {
         $agendamento = FaesaClinicaAgendamento::findOrFail($id);
+
+        // Atualiza status e mensagem de cancelamento
         $agendamento->STATUS_AGEND = "Cancelado";
         $agendamento->MENSAGEM = $msg;
+
+        // Atualiza status de pagamento e valor, se enviados
+        if (!is_null($checkPagamento)) {
+            $agendamento->STATUS_PAG = $checkPagamento;
+        }
+
+        if (!is_null($valorPagamento)) {
+            $agendamento->VALOR_PAG = $valorPagamento;
+        }
+
         $agendamento->save();
 
         return $agendamento;

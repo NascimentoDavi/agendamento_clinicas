@@ -173,6 +173,7 @@
                 <!-- CORPO MODAL -->
                 <div class="modal-body">
                     <p><strong>Paciente:</strong> <span id="modalPaciente"></span></p>
+                    <p><strong>Psicólogo:</strong> <span id="modalPsicologo"></span></p>
                     <p><strong>Data e Horário:</strong> <span id="modalDataHora"></span></p>
                     <p><strong>Serviço:</strong> <span id="modalServico"></span></p>
 
@@ -297,6 +298,7 @@
                 const dataHoraStr = start.toLocaleString('pt-BR', options) + " - " + (end ? end.toLocaleString('pt-BR', options) : '');
 
                 document.getElementById('modalPaciente').textContent = event.title;
+                document.getElementById('modalPsicologo').textContent = event.extendedProps.aluno || 'Não informado';
                 document.getElementById('modalDataHora').textContent = dataHoraStr;
                 document.getElementById('modalObservacoes').textContent = event.extendedProps.description || 'Nenhuma observação';
                 document.getElementById('modalStatusSelect').value = event.extendedProps.status || 'Agendado';
@@ -419,8 +421,8 @@
 
         const content = document.getElementById('text-cancelamento').value;
         const eventId = this.getAttribute('data-event-id');
-        const checkPagamento = document.getElementById('modalCheckPagamento');
-        const valorPagamento = document.getElementById('modalValorPagamento');
+        const checkPagamento = document.getElementById('modalCheckPagamento').checked ? 'S' : 'N';
+        const valorPagamento = document.getElementById('modalValorPagamento').value;
 
         // CAOS NÃO INSIRA MOTIVO
         if (!content) {

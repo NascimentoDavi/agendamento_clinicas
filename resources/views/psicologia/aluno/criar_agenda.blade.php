@@ -245,7 +245,6 @@
                 .catch(() => callback());
         },
         onChange: function(value) {
-            // Quando a disciplina mudar, limpar salas e recarregar
             localSelect.clearOptions();
             localSelect.load('');
         }

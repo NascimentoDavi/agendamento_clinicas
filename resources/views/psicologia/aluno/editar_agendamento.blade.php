@@ -20,6 +20,24 @@
         .card-footer { font-size: 0.8rem; color: #6c757d; }
         /* Esconde o select original do TomSelect até ser inicializado */
         .ts-hidden-accessible { display: none; }
+
+            .shadow-dark {
+            box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
+        }
+        @keyframes slideDownFadeOut {
+            0%   { transform: translate(-50%, -100%); opacity: 0; }
+            10%  { transform: translate(-50%, 0); opacity: 1; }
+            90%  { transform: translate(-50%, 0); opacity: 1; }
+            100% { transform: translate(-50%, -100%); opacity: 0; }
+        }
+        .animate-alert {
+            animation: slideDownFadeOut 5s ease forwards;
+            z-index: 1050;
+        }
+        .modal-body {
+           max-height: 75vh;
+           overflow-y: auto;
+        }
     </style>
 
 </head>
@@ -30,20 +48,20 @@
     @include('components.aluno_navbar')
 
     <!-- EM CASO DE ERROS -->
-    @if ($errors->any())
-        <div id="alert-error" class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;">
+    @if($errors->any())
+        <div class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3 animate-alert" style="max-width: 90%;">
             <strong>Ops!</strong> Corrija os itens abaixo:
             <ul class="mb-0 mt-1 list-unstyled">
-                @foreach ($errors->all() as $error)
+                @foreach($errors->all() as $error)
                     <li><i class="bi bi-exclamation-circle-fill me-1"></i> {{ $error }}</li>
                 @endforeach
             </ul>
         </div>
     @endif
 
-    @if (session('error'))
-        <div id="alert-session-error" class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;">
-            <strong>Atenção:</strong> {{ session('error') }}
+    @if(session('success'))
+        <div class="alert alert-success text-center shadow position-fixed top-0 start-50 translate-middle-x mt-3 animate-alert">
+            {{ session('success') }}
         </div>
     @endif
 
@@ -239,126 +257,117 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const btnEditar = document.getElementById('btn-editar');
-    const btnSalvar = document.getElementById('btn-salvar');
+        document.addEventListener('DOMContentLoaded', function() {
+        const btnEditar = document.getElementById('btn-editar');
+        const btnSalvar = document.getElementById('btn-salvar');
 
-    // Flag para garantir que a inicialização ocorra apenas uma vez
-    let editModeInicializado = false;
+        let editModeInicializado = false;
 
-    // Traduz o Flatpickr para português assim que a página carrega
-    flatpickr.localize(flatpickr.l10ns.pt);
+        flatpickr.localize(flatpickr.l10ns.pt);
 
-    btnEditar.addEventListener('click', function () {
-        // Habilita campos simples
-        document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('disabled'));
+        btnEditar.addEventListener('click', function () {
+            document.querySelectorAll('.editable-field').forEach(el => el.removeAttribute('disabled'));
+            document.querySelectorAll('.view-mode').forEach(el => el.classList.add('d-none'));
+            document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('d-none'));
+            btnSalvar.classList.remove('d-none');
+            this.classList.add('d-none');
 
-        // Alterna a visibilidade dos campos
-        document.querySelectorAll('.view-mode').forEach(el => el.classList.add('d-none'));
-        document.querySelectorAll('.edit-mode').forEach(el => el.classList.remove('d-none'));
-        
-        // Troca os botões
-        btnSalvar.classList.remove('d-none');
-        this.classList.add('d-none');
+            if (!editModeInicializado) {
+                inicializarTomSelects();
+                inicializarFlatpickr();
+                editModeInicializado = true;
+            }
+        });
 
-        // Inicializa os plugins (apenas na primeira vez)
-        if (!editModeInicializado) {
-            inicializarTomSelects();
-            inicializarFlatpickr(); // <--- CHAMADA DA NOVA FUNÇÃO
-            editModeInicializado = true;
+        function inicializarFlatpickr() {
+            const commonDateConfig = {
+                altInput: true,
+                altFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
+                allowInput: true,
+                minDate: "today"
+            };
+            const commonTimeConfig = {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minuteIncrement: 15,
+                allowInput: true
+            };
+
+            flatpickr("#DT_AGEND", commonDateConfig);
+            flatpickr("#HR_AGEND_INI", commonTimeConfig);
+            flatpickr("#HR_AGEND_FIN", commonTimeConfig);
+        }
+
+        function inicializarTomSelects() {
+            // --- SELECT PACIENTE ---
+            new TomSelect('#select-paciente', {
+                valueField: 'ID_PACIENTE',
+                labelField: 'NOME_COMPL_PACIENTE',
+                searchField: ['NOME_COMPL_PACIENTE', 'CPF_PACIENTE'],
+                create: false,
+                load: (query, callback) => {
+                    if (query.length < 2) return callback();
+                    fetch(`/aluno/consultar-paciente/buscar-nome-cpf?search=${encodeURIComponent(query)}`)
+                        .then(r => r.json()).then(json => callback(json)).catch(() => callback());
+                },
+                render: {
+                    option: (data, escape) => `<div><strong>${escape(data.NOME_COMPL_PACIENTE)}</strong><small class="d-block text-muted">${escape(data.CPF_PACIENTE || '')}</small></div>`,
+                    item: (data, escape) => `<div>${escape(data.NOME_COMPL_PACIENTE)}</div>`
+                }
+            });
+
+            // --- SELECT LOCAL ---
+            const localSelect = new TomSelect('#select-local', {
+                valueField: 'ID_SALA_CLINICA',
+                labelField: 'DESCRICAO',
+                searchField: ['DESCRICAO'],
+                create: false,
+                load: (query, callback) => {
+                    const servicoId = document.querySelector('#select-servico').value;
+                    if (!servicoId) return callback(); // não carrega se não houver serviço
+                    const url = `/psicologia/pesquisar-local?search=${encodeURIComponent(query)}&servico=${encodeURIComponent(servicoId)}`;
+                    fetch(url).then(r => r.json()).then(j => callback(j)).catch(() => callback());
+                }
+            });
+
+            // --- SELECT SERVIÇO ---
+            const servicoSelect = new TomSelect('#select-servico', {
+                valueField: 'ID_SERVICO_CLINICA',
+                labelField: 'SERVICO_CLINICA_DESC',
+                searchField: ['SERVICO_CLINICA_DESC'],
+                create: false,
+                load: (query, callback) => {
+                    const url = `/aluno/pesquisar-disciplina?search=${encodeURIComponent(query)}`;
+                    fetch(url).then(r => r.json()).then(j => callback(j)).catch(() => callback());
+                },
+                onChange: function(value) {
+                    // Limpa e recarrega o select de local quando o serviço muda
+                    localSelect.clearOptions();
+                    localSelect.load('');
+                }
+            });
+
+            // --- SELECT ALUNO ---
+            new TomSelect('#select-aluno', {
+                valueField: 'ID_ALUNO',
+                labelField: 'NOME_COMPL',
+                searchField: ['NOME_COMPL', 'ALUNO'],
+                create: false,
+                load: (query, callback) => {
+                    const url = `/psicologia/listar-alunos?search=${encodeURIComponent(query)}`;
+                    fetch(url).then(r => r.json()).then(j => callback(j)).catch(() => callback());
+                },
+                render: {
+                    option: (data, escape) => `<div>${escape(data.NOME_COMPL)} - ${escape(data.ID_ALUNO)}</div>`,
+                    item: (data, escape) => `<div>${escape(data.NOME_COMPL)}</div>`
+                }
+            });
         }
     });
+    </script>
 
-    /**
-     * NOVA FUNÇÃO PARA INICIALIZAR O FLATPICKR
-     */
-    function inicializarFlatpickr() {
-        const commonDateConfig = {
-            altInput: true,       
-            altFormat: "d/m/Y",  
-            dateFormat: "Y-m-d", 
-            allowInput: true,
-            minDate: "today"
-        };
-
-        const commonTimeConfig = {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-            minuteIncrement: 15,
-            allowInput: true
-        };
-
-        // Aplica a configuração aos campos pelos seus IDs
-        flatpickr("#DT_AGEND", commonDateConfig);
-        flatpickr("#HR_AGEND_INI", commonTimeConfig);
-        flatpickr("#HR_AGEND_FIN", commonTimeConfig);
-    }
-
-
-    /**
-     * FUNÇÃO PARA INICIALIZAR OS TOMSELECTS (já existente)
-     */
-    function inicializarTomSelects() {
-        // --- SELECT PACIENTE ---
-        new TomSelect('#select-paciente', {
-            valueField: 'ID_PACIENTE',
-            labelField: 'NOME_COMPL_PACIENTE',
-            searchField: ['NOME_COMPL_PACIENTE', 'CPF_PACIENTE'],
-            create: false,
-            load: (query, callback) => {
-                if (query.length < 2) return callback();
-                const url = `/aluno/consultar-paciente/buscar-nome-cpf?search=${encodeURIComponent(query)}`;
-                fetch(url).then(response => response.json()).then(json => callback(json)).catch(() => callback());
-            },
-            render: {
-                option: (data, escape) => `<div><strong>${escape(data.NOME_COMPL_PACIENTE)}</strong><small class="d-block text-muted">${escape(data.CPF_PACIENTE || '')}</small></div>`,
-                item: (data, escape) => `<div>${escape(data.NOME_COMPL_PACIENTE)}</div>`
-            }
-        });
-
-        // --- SELECT SERVIÇO ---
-        new TomSelect('#select-servico', {
-            valueField: 'ID_SERVICO_CLINICA',
-            labelField: 'SERVICO_CLINICA_DESC',
-            searchField: ['SERVICO_CLINICA_DESC'],
-            create: false,
-            load: (query, callback) => {
-                const url = `/psicologia/pesquisar-servico?search=${encodeURIComponent(query)}`;
-                fetch(url).then(r => r.json()).then(j => callback(j)).catch(() => callback());
-            }
-        });
-
-        // --- SELECT aluno ---
-        new TomSelect('#select-aluno', {
-            valueField: 'ID_ALUNO',
-            labelField: 'NOME_COMPL',
-            searchField: ['NOME_COMPL', 'ALUNO'],
-            create: false,
-            load: (query, callback) => {
-                const url = `/psicologia/listar-alunos?search=${encodeURIComponent(query)}`;
-                fetch(url).then(r => r.json()).then(j => callback(j)).catch(() => callback());
-            },
-            render: {
-                option: (data, escape) => `<div>${escape(data.NOME_COMPL)} - ${escape(data.ID_ALUNO)}</div>`,
-                item: (data, escape) => `<div>${escape(data.NOME_COMPL)}</div>`
-            }
-        });
-
-        // --- SELECT LOCAL ---
-        new TomSelect('#select-local', {
-            valueField: 'ID_SALA_CLINICA',
-            labelField: 'DESCRICAO',
-            searchField: ['DESCRICAO'],
-            create: false,
-            load: (query, callback) => {
-                const url = `/psicologia/pesquisar-local?search=${encodeURIComponent(query)}`;
-                fetch(url).then(r => r.json()).then(j => callback(j)).catch(() => callback());
-            }
-        });
-    }
-});
-</script>
 </body>
 </html>

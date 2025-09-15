@@ -317,10 +317,13 @@
                     body: JSON.stringify(data)
                 })
                 .then(res => res.json().then(body => ({ ok: res.ok, body })))
-                .then(({ ok, body }) => {
+               .then(({ ok, body }) => {
                     if (!ok) throw new Error(body.message || 'Erro ao salvar.');
                     editarSalaModal.hide();
-                    window.location.reload(); 
+                    showModalAlert(body.message, 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
                 })
                 .catch(err => showModalAlert(err.message));
             });
@@ -335,33 +338,22 @@
                     headers: { 'X-CSRF-TOKEN': csrfToken }
                 })
                 .then(res => {
-                    // Este bloco agora pode lidar com JSON em qualquer resposta, seja erro ou sucesso
                     return res.json().then(body => ({ ok: res.ok, status: res.status, body }));
                 })
                 .then(({ ok, body }) => {
-                    // Se a resposta NÃO for OK (status 4xx, 5xx), o erro será lançado
                     if (!ok) {
-                        // O `body.message` agora contém a mensagem de erro correta do seu controller
                         throw new Error(body.message || 'Ocorreu um erro ao processar a solicitação.');
                     }
 
-                    // Se a resposta for OK (sucesso)
                     editarSalaModal.hide();
 
-                    // ✨ A MÁGICA ACONTECE AQUI:
-                    // Em vez de recarregar, mostramos a mensagem de sucesso que veio do backend.
-                    // Supondo que sua função showModalAlert possa ter um tipo 'success'.
                     showModalAlert(body.message, 'success'); 
-
-                    // Depois de mostrar a mensagem, você pode recarregar a página após um tempo
-                    // para o usuário ver a mensagem, ou remover a linha da tabela dinamicamente.
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2000); // Recarrega após 2 segundos
+                    }, 2000);
                 })
                 .catch(err => {
-                    // Este .catch agora vai pegar todos os erros e exibir a mensagem no modal
-                    showModalAlert(err.message, 'danger'); // Passando o tipo 'danger'
+                    showModalAlert(err.message, 'danger');
                 });
             });
 

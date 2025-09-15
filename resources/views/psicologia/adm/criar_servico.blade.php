@@ -358,7 +358,12 @@
                 .then(({ ok, body }) => {
                     if (!ok) throw new Error(body.message || 'Erro ao salvar.');
                     editarServicoModal.hide();
-                    window.location.reload();
+
+                    // MOSTRA ALERTA DE SUCESSO
+                    showModalAlert(body.message || 'Serviço atualizado com sucesso!', 'success');
+
+                    // Atualiza tabela sem reload
+                    carregarServicos(searchInput.value);
                 })
                 .catch(err => showModalAlert(err.message));
             });
@@ -375,7 +380,12 @@
                 .then(({ ok, body }) => {
                     if (!ok) throw new Error(body.message || 'Erro ao excluir.');
                     editarServicoModal.hide();
-                    window.location.reload();
+
+                    // MOSTRA ALERTA DE SUCESSO
+                    showModalAlert(body.message || 'Serviço excluído com sucesso!', 'success');
+
+                    // Atualiza tabela sem reload
+                    carregarServicos(searchInput.value);
                 })
                 .catch(err => showModalAlert(err.message));
             });
