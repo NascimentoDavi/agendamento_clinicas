@@ -52,14 +52,13 @@ class AgendamentoController extends Controller
     // RETORNA AGENDAMENTOS PARA O CALENDÁRIO
     public function getAgendamentosForCalendar()
     {
-        $agendamentos = FaesaClinicaAgendamento::with('paciente', 'servico')
-        ->where('ID_CLINICA', 1)
-        ->where('STATUS_AGEND', '<>', 'Excluido')
-        ->where('STATUS_AGEND', '<>', 'Remarcado')
-        ->get();
+        $agendamentos = FaesaClinicaAgendamento::with('paciente', 'servico', 'aluno')
+            ->where('ID_CLINICA', 1)
+            ->where('STATUS_AGEND', '<>', 'Excluido')
+            ->where('STATUS_AGEND', '<>', 'Remarcado')
+            ->get();
         
-        $events = $agendamentos
-        ->map(function($agendamento) {
+        $events = $agendamentos->map(function($agendamento) {
             $dateOnly = substr($agendamento->DT_AGEND, 0, 10);
             $horaInicio = substr($agendamento->HR_AGEND_INI, 0, 8);
             $horaFim = substr($agendamento->HR_AGEND_FIN, 0, 8);
@@ -79,15 +78,14 @@ class AgendamentoController extends Controller
 
             return [
                 'id' => $agendamento->ID_AGENDAMENTO,
-                'title' => $agendamento->paciente 
-                    ? $agendamento->paciente->NOME_COMPL_PACIENTE 
-                    : 'Agendamento',
+                'title' => $agendamento->paciente?->NOME_COMPL_PACIENTE ?? 'Agendamento',
+                'aluno' => $agendamento->aluno?->NOME_COMPL ?? 'Não informado',
                 'start' => $start,
                 'end' => $end,
                 'status' => $status,
                 'checkPagamento' => $checkPagamento,
                 'valorPagamento' => $valorPagamento,
-                'servico' => $agendamento->servico->SERVICO_CLINICA_DESC ?? 'Serviço não informado',
+                'servico' => $agendamento->servico?->SERVICO_CLINICA_DESC ?? 'Serviço não informado',
                 'description' => $agendamento->OBSERVACOES ?? '',
                 'color' => $cor,
                 'local' => $agendamento->LOCAL ?? 'Não informado',
@@ -96,7 +94,7 @@ class AgendamentoController extends Controller
 
         return response()->json($events);
     }
-
+    
     // RETORNA AGENDAMENTOS PARA O CALENDÁRIO DO aluno
     public function getAgendamentosForCalendaraluno()
     {        
@@ -189,6 +187,7 @@ class AgendamentoController extends Controller
                 'title' => $agendamento->paciente 
                     ? $agendamento->paciente->NOME_COMPL_PACIENTE 
                     : 'Agendamento',
+                'aluno' => $agendamento->aluno?->NOME_COMPL ?? 'Não informado',
                 'start' => $start,
                 'end' => $end,
                 'status' => $status,
