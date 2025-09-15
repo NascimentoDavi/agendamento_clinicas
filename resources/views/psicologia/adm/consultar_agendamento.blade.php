@@ -119,9 +119,9 @@
     <div class="container-fluid ms-3 me-3 mt-3">
         <div class="row">
             <x-page-title>
-                 <a href="/psicologia/criar-agendamento" class="btn btn-success p-2 me-3" style="font-size: 15px;">
-                    Novo Agendamento
-                </a>
+                    <p onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success p-2 me-3" style="font-size: 15px;" >
+                        <span>Novo Agendamento</span>
+                    </p>
             </x-page-title>
 
             <div class="col-12 shadow-lg shadow-dark p-3 p-md-4 bg-body-tertiary rounded">
