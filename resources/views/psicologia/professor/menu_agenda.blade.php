@@ -183,7 +183,6 @@
                 
                 <!-- RODAPÉ MODAL -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnSalvarStatus">Salvar Alterações</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 </div>
 
@@ -191,25 +190,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE MOTIVO DE CANCELAMENTO -->
-    <div class="modal fade" id="motivoCancelamentoModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Motivo do Cancelamento</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="text-cancelamento" class="form-label">Motivo:</label>
-                        <input type="text" class="form-control" id="text-cancelamento">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" id="btnMensagemCancelamento">Salvar</button>
-                </div>
-            </div>
-        </div>
-    </div>
     
 </body >
 
@@ -280,8 +260,6 @@
                 document.getElementById('modalServico').textContent = event.extendedProps.servico || 'Não informado';
 
                 const modal = new bootstrap.Modal(document.getElementById('agendamentoModal'));
-                document.getElementById('btnSalvarStatus').setAttribute('data-event-id', event.id);
-                document.getElementById('btnMensagemCancelamento').setAttribute('data-event-id', event.id);
                 modal.show();
             },
 
