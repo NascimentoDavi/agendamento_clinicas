@@ -30,7 +30,7 @@ class HorarioController extends Controller
         ]);
 
         $horario = new FaesaClinicaHorario();
-        $horario->USUARIO = session('usuario')[0]['ID_USUARIO_CLINICA'];
+        $horario->USUARIO = session('usuario')->ID_USUARIO_CLINICA;
         $horario->ID_CLINICA = 1;
         $horario->BLOQUEADO = $request->BLOQUEADO;
         $horario->DATA_HORARIO_INICIAL = $request->DATA_HORARIO_INICIAL;
