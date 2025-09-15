@@ -161,13 +161,13 @@ Route::middleware([AuthMiddleware::class])
 });
 
 
-Route::middleware([AuthMiddleware::class])->group(function () {
+Route::middleware([AuthMiddleware::class])
+    ->prefix('aluno')
+    ->group(function () {
 
     //----- MENU -----//
     Route::get('/', function () {
-        if (session()->has('aluno')) {
-            return view('psicologia.aluno.menu_agenda');
-        }
+        return view('psicologia.aluno.menu_agenda');
     })->name('alunoAgenda');
 
     //----- AGENDAMENTOS (Visão do Aluno) -----//
