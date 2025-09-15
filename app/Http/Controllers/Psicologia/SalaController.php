@@ -9,6 +9,7 @@ use App\Models\FaesaClinicaServico;
 use App\Models\FaesaClinicaSala;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class SalaController extends Controller
 {
@@ -70,27 +71,38 @@ class SalaController extends Controller
     {
         $requestData = $request->json()->all();
 
-        $validatedData = validator($requestData, [
-            'DESCRICAO' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('FAESA_CLINICA_SALA', 'DESCRICAO')->ignore($id, 'ID_SALA_CLINICA'),
-            ],
-            'DISCIPLINA' => 'nullable|string|max:10',
-            'ATIVO' => 'required|in:S,N',
-        ], [
-            'DESCRICAO.required' => 'A descrição da Sala é obrigatória',
-            'DESCRICAO.unique' => 'Já existe uma sala com essa descrição.',
-            'DESCRICAO.string' => 'A descrição da sala não pode ser numérica',
-            'DESCRICAO.max' => 'A descrição da sala não pode ter mais de 255 caracteres',
-            'DISCIPLINA.string' => 'A Disciplina deve conter o código da Disciplina',
-        ])->validate();
+        try {
+            $validatedData = validator($requestData, [
+                'DESCRICAO' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('FAESA_CLINICA_SALA', 'DESCRICAO')->ignore($id, 'ID_SALA_CLINICA'),
+                ],
+                'DISCIPLINA' => 'nullable|string|max:10',
+                'ATIVO' => 'required|in:S,N',
+            ], [
+                'DESCRICAO.required' => 'A descrição da Sala é obrigatória',
+                'DESCRICAO.unique' => 'Já existe uma sala com essa descrição.',
+                'DESCRICAO.string' => 'A descrição da sala não pode ser numérica',
+                'DESCRICAO.max' => 'A descrição da sala não pode ter mais de 255 caracteres',
+                'DISCIPLINA.string' => 'A Disciplina deve conter o código da Disciplina',
+            ])->validate();
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         $sala = FaesaClinicaSala::findOrFail($id);
         $sala->update($validatedData);
 
-        return response()->json(['message' => 'Sala atualizada com sucesso!']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Sala atualizada com sucesso!'
+        ]);
     }
 
     public function deleteSala($id): JsonResponse
