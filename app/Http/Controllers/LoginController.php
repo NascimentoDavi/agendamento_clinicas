@@ -3,28 +3,68 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class LoginController extends Controller
 {
-    public function login(Request $request)
+    /**
+     * Mostra o formulário de login ou redireciona o usuário se ele já estiver logado.
+     * Este método substitui a closure da sua rota 'loginGET'.
+     */
+    public function showLoginForm(Request $request)
     {
-        // ARMAZENA LOGIN DE USUARIO E ID DA CLINICA
-        $usuario = session('usuario');
-
-        if ($usuario) {
-            return redirect('/psicologia');
-        } else {          
-            return redirect()->route('loginGET');
+        // Redireciona CADA tipo de usuário para seu respectivo dashboard
+        if (session('aluno')) {
+            // A rota 'alunoAgenda' está dentro do prefixo '/aluno'
+            return redirect()->route('alunoAgenda');
         } 
-
+        
+        if (session('professor')) {
+            // A rota 'professorMenu' está dentro do prefixo '/professor'
+            return redirect()->route('professorMenu');
+        } 
+        
+        if (session('usuario')) {
+            // A rota 'menu_agenda_psicologia' está dentro do prefixo '/psicologia'
+            return redirect()->route('menu_agenda_psicologia');
+        } 
+        
+        // Se ninguém estiver logado, apenas mostra a view de login
+        return view('login');
     }
 
-    public function logout(Request $request)
+    /**
+     * Recebe a requisição após o AuthMiddleware validar o login.
+     * Este método substitui a closure vazia da sua rota 'loginPOST'.
+     * Sua única função é redirecionar o usuário para o dashboard correto.
+     */
+    public function handleLogin(Request $request): RedirectResponse
     {
-        // LIMPA OS DADOS DA SESSÃO DE USUÁRIO
-        session()->forget('usuario');
+        // O middleware já criou a sessão. A lógica aqui é a mesma de cima:
+        // olhar a sessão e redirecionar para a rota com o prefixo correto.
+        if (session('aluno')) {
+            return redirect()->route('alunoAgenda');
+        } 
+        
+        if (session('professor')) {
+            return redirect()->route('professorMenu');
+        } 
+        
+        if (session('usuario')) {
+            return redirect()->route('menu_agenda_psicologia');
+        } 
+        
+        // Se algo der muito errado e não houver sessão, volta ao login.
+        return redirect()->route('loginGET')->with('error', 'Ocorreu um erro inesperado.');
+    }
 
-        // REDIRECIONA PARA TELA DE LOGIN NOVAMENTE
-        return view('login');
+    /**
+     * Realiza o logout de QUALQUER tipo de usuário.
+     * Este método substitui a closure da sua rota 'logout'.
+     */
+    public function handleLogout(Request $request): RedirectResponse
+    {
+        session()->forget(['usuario', 'aluno', 'professor']);
+        return redirect()->route('loginGET');
     }
 }

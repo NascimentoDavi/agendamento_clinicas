@@ -17,46 +17,46 @@ use App\Http\Middleware\AuthProfessorMiddleware;
 use App\Http\Middleware\CheckClinicaMiddleware;
 use App\Http\Middleware\AuthAlunoMiddleware;
 
-// PÁGINA DE LOGIN - SELEÇÃO DE PSICOLOGIA OU ODONTOLOGIA
+/*
+|--------------------------------------------------------------------------
+| ROTAS DE AUTENTICAÇÃO GERAL
+|--------------------------------------------------------------------------
+*/
 
-
-
-
-Route::middleware([AuthMiddleware::class])->group(function () {
+Route::middleware([AuthMiddleware::class])
+    ->group(function () {
 
     Route::get('/', function () {
         return redirect()->route('loginGET');
     })->name('loginRoot');
 
-    Route::get('/login', function () {
-        if (session()->has('usuario')) {
-            return redirect()->route('menu_agenda_psicologia');
-        }
-        return view('login');
-    })->name('loginGET');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginGET');
 
-    Route::post('/login', [LoginController::class, 'login'])->name('loginPOST');
+    Route::post('/login', [LoginController::class, 'handleLogin'])->name('loginPOST');
 
-    Route::get('/logout', function () {
-        session()->forget('usuario');
-        return redirect()->route('loginGET');
-    })->name('logout');
+    Route::get('/logout', [LoginController::class, 'handleLogout'])->name('logout');
+
+
 });
 
-Route::middleware([AuthMiddleware::class, CheckClinicaMiddleware::class])
+/*
+|--------------------------------------------------------------------------
+| ROTAS DE ADMINISTRADOR
+|--------------------------------------------------------------------------
+*/
+Route::middleware([AuthMiddleware::class])
     ->prefix('psicologia')
     ->group(function () {
 
-    // ROOT
-    Route::get('/', function () {
-        $usuario = session('usuario');
-        return view('psicologia.adm/menu_agenda', compact('usuario'));
-    })->name('menu_agenda_psicologia');
+        //----- ROTAS GERAIS E RELATÓRIOS -----//
+        Route::get('/', function () {
+            $usuario = session('usuario');
+            return view('psicologia.adm.menu_agenda', compact('usuario'));
+        })->name('menu_agenda_psicologia');
 
-    // RELATÓRIOS
-    Route::get('/relatorios-agendamento', function () {
-        return view('psicologia.adm/relatorios_agendamento');
-    })->name('relatorio_psicologia');
+        Route::get('/relatorios-agendamento', function () {
+            return view('psicologia.adm.relatorios_agendamento');
+        })->name('relatorio_psicologia');
 
     // CRIAR PACIENTE
     Route::get('/criar-paciente', function () {
@@ -161,96 +161,58 @@ Route::middleware([AuthMiddleware::class, CheckClinicaMiddleware::class])
 });
 
 
-Route::middleware([AuthAlunoMiddleware::class])->group(function () {
+Route::middleware([AuthMiddleware::class])
+    ->prefix('aluno')
+    ->group(function () {
 
-    // ROTAS DE aluno
-    Route::get('/aluno/login', function() {
-        if(session()->has('aluno')) {
-            return redirect()->route('alunoAgenda');
-        } else {
-            return view('psicologia.aluno.login_aluno');
-        }
-    })->name('alunoLoginGet');
-
-    Route::get('/aluno', function() {
-        if(session()->has('aluno')) {
-            return view(view: 'psicologia.aluno.menu_agenda');
-        }
+    //----- MENU -----//
+    Route::get('/', function () {
+        return view('psicologia.aluno.menu_agenda');
     })->name('alunoAgenda');
-    
-    Route::post('/aluno/login', function() {
-        return redirect()->route('alunoAgenda');
-    })->name('alunoLoginPost');
 
-    Route::get('/aluno/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendaraluno']);
-
-    Route::get('/aluno/consultar-paciente/buscar', [PacienteController::class, 'getPacienteByNameCPFaluno'])->name('alunoGetPaciente');
-
-    Route::get('/aluno/consultar-agendamento/buscar', [AgendamentoController::class, 'getAgendamentosForAluno'])->name('getAgendamentosForAluno');
-
-    Route::get('/aluno/agendamento/{id}/editar', [AgendamentoController::class, 'editAgendamentoaluno'])->name('agendamentoaluno.edit');
-
-    Route::put('/aluno/agendamento', [AgendamentoController::class, 'updateAgendamento'])->name('aluno.agendamento.update');
-
-    Route::get('/aluno/pesquisar-disciplina', [ServicoController::class, 'getDisciplinaServico'])->name('alunoGetDisciplina');
-
-    Route::get('/aluno/criar-agendamento', function() {
-        return view('psicologia.aluno.criar_agenda');
-    })->name('alunoCriarAgenda-Get');
-
-    Route::post('/aluno/criar-agendamento/criar', [AgendamentoController::class, 'criarAgendamentoaluno'])->name('criarAgendamento-aluno');
-
-    Route::get('/aluno/consultar-agendamento', function() {
+    //----- AGENDAMENTOS (Visão do Aluno) -----//
+    Route::get('/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendaraluno']);
+    Route::get('/consultar-agendamento', function () {
         return view('psicologia.aluno.consultar_agenda');
     })->name('alunoConsultarAgendamentos-GET');
+    Route::get('/consultar-agendamento/buscar', [AgendamentoController::class, 'getAgendamentosForAluno'])->name('getAgendamentosForAluno');
+    Route::get('/criar-agendamento', function () {
+        return view('psicologia.aluno.criar_agenda');
+    })->name('alunoCriarAgenda-Get');
+    Route::post('/criar-agendamento/criar', [AgendamentoController::class, 'criarAgendamentoaluno'])->name('criarAgendamento-aluno');
+    Route::get('/agendamento/{id}/editar', [AgendamentoController::class, 'editAgendamentoaluno'])->name('agendamentoaluno.edit');
+    Route::put('/agendamento', [AgendamentoController::class, 'updateAgendamento'])->name('aluno.agendamento.update');
+    Route::delete('/agendamento/{id}', [AgendamentoController::class, 'AlunoDeleteAgendamento'])->name('aluno.agendamento.delete');
+
+    //----- CONSULTAS (Visão do Aluno) -----//
+    Route::get('/consultar-paciente/buscar', [PacienteController::class, 'getPacienteByNameCPFaluno'])->name('alunoGetPaciente');
+    Route::get('/pesquisar-disciplina', [ServicoController::class, 'getDisciplinaServico'])->name('alunoGetDisciplina');
 });
-Route::get('/aluno/logout', function() {
-    session()->forget('aluno');
-    return redirect()->route('alunoLoginGet');
-})->name('alunoLogout');
 
 
+/*
+|--------------------------------------------------------------------------
+| ROTAS DA ÁREA DO PROFESSOR
+|--------------------------------------------------------------------------
+*/
+Route::middleware([AuthMiddleware::class])
+    ->prefix('professor')
+    ->group(function () {
 
-
-
-// ROTAS DE PROFESSOR
-Route::get('/professor/login', function() {
-    if(session()->has('professor')) {
-        return view('psicologia.professor.menu_agenda');
-    } else {
-        return view('psicologia.professor.login_professor');
-    }
-})->name('professorLoginGet');
-
-Route::post('/professor/login', function() {
-    if(session()->has('professor')) {
-        return view('psicologia.professor.menu_agenda');
-    }
-})->name('professorLoginPost');
-
-Route::middleware([AuthProfessorMiddleware::class])->group( function() {
-    Route::match(['get', 'post'], '/professor', function() {
+    //----- MENU -----//
+    Route::get('/', function () {
         return view('psicologia.professor.menu_agenda');
     })->name('professorMenu');
 
-    Route::get('/professor/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendarProfessor'])->name('getAgendamentosForCalendarProfessor');
-
-    Route::post('/professor/login', function() {
-        return view('psicologia.professor.menu_agenda');
-    })->name('professorLoginPost');
-
-    Route::get('/professor/consultar-agendamento', function() {
+    //----- CONSULTAS (Visão do Professor) -----//
+    Route::get('/agendamentos-calendar', [AgendamentoController::class, 'getAgendamentosForCalendarProfessor'])->name('getAgendamentosForCalendarProfessor');
+    Route::get('/consultar-agendamento', function () {
         return view('psicologia.professor.consultar_agenda');
     })->name('professorConsultarAgendamentos-GET');
 
-    Route::get('/professor/consultar-agendamento/buscar', [AgendamentoController::class, 'getAgendamentosForProfessor'])->name('getAgendamentosForProfessor');
+    Route::get('/consultar-agendamento/buscar', [AgendamentoController::class, 'getAgendamentosForProfessor'])->name('getAgendamentosForProfessor');
 
-    Route::get('/professor/aluno', function() {
+    Route::get('/aluno', function() {
         return view('psicologia.professor.consultar_aluno');
     });
-
-    Route::get('/professor/logout', function() {
-        session()->forget('professor');
-        return redirect()->route('professorLoginGet');
-    })->name('professorLogout');
 });

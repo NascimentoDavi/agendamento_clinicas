@@ -199,6 +199,48 @@
         }
 
 
+        /* ===== ESTILOS ADICIONADOS PARA O SELETOR DE TIPO DE USUÁRIO ===== */
+        .select-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .select-container select {
+            width: 100%;
+            padding: 10px 5px;
+            font-size: 16px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            background-color: transparent;
+            appearance: none; /* Remove a seta padrão do navegador */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            color: gray; /* Cor do texto do placeholder */
+        }
+        
+        /* Muda a cor do texto quando uma opção válida é selecionada */
+        .select-container select:valid {
+            color: #000;
+        }
+
+        /* Adiciona uma seta para baixo personalizada */
+        .select-container::after {
+            content: '\25BC';
+            font-size: 16px;
+            color: #999;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            pointer-events: none; /* Permite clicar através do ícone */
+        }
+
+        .select-container select:focus {
+            outline: none;
+            border-bottom: 2px solid #2596be;
+        }
+        /* ===== FIM DOS ESTILOS ADICIONADOS ===== */
+
 
     </style>
 
@@ -208,14 +250,12 @@
     <div class="container">
 
 
-        <!-- LOGO FAESA -->
         <img src="{{ asset('faesa.png') }}" alt="Logo">
         
         
         <form action="{{ route('loginPOST') }}" method="POST">
             @csrf
 
-            <!-- USUARIO -->
             <div class="input-group">
                 <input type="text" id="login" name="login" required placeholder=" ">
                 <label for="login">Usuário</label>
@@ -226,7 +266,6 @@
             <div class="error">{{ $message }}</div>
             @enderror
             
-
 
             <div class="input-group">
                 <input type="password" id="senha" name="senha" required placeholder=" ">
@@ -240,7 +279,14 @@
             @error('senha')
             <div class="error">{{ $message }}</div>
             @enderror
-
+            
+            <div class="select-container">
+                <select id="tipo_usuario" name="tipo_usuario" required>
+                    <option value="usuario" selected>Administrador</option>
+                    <option value="aluno">Aluno</option>
+                    <option value="professor">Professor</option>
+                </select>
+            </div>
             @if (session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
@@ -251,7 +297,6 @@
             <input type="submit" value="Entrar">
 
             
-            <!-- ESQUECEU A SENHA? -->
             <div class="forgot-password-link">
                 <a href="https://acesso.faesa.br/#/auth-user/forgot-password">Esqueceu a senha?</a>
             </div>
