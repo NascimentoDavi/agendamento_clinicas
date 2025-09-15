@@ -36,7 +36,7 @@ class AuthMiddleware
     {
         $routeName = $request->route()?->getName();
         $routePrefix = $request->route()?->getPrefix();
-        $rotasPublicas = ['loginGET', 'loginPOST', 'logout'];
+        $rotasPublicas = ['loginRoot','loginGET', 'loginPOST', 'logout'];
 
         // --- LÓGICA PARA USUÁRIOS LOGADOS (AUTORIZAÇÃO) ---
 
