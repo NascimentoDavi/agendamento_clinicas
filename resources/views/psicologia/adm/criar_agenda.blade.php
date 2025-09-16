@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF--8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Agendamento</title>
     <link rel="icon" type="image/png" href="/favicon_faesa.png">
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 
-    <!-- TOM SELECT -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.css" rel="stylesheet">
 
     <style>
@@ -62,7 +61,6 @@
 
 <body class="bg-body-secondary">
 
-<!-- COMPONENT NAVBAR -->
 @include('components.navbar')
 
 @if ($errors->any())
@@ -92,13 +90,11 @@
 
     <div class="row">
         
-        <!-- COMPONENT DE HEADER DE CADA PÁGINA DAS VIEWS -->
         <x-page-title>
         </x-page-title>
         
         <div class="col-12 shadow-lg shadow-dark p-4 bg-body-tertiary rounded">
 
-            <!-- FORM DE AGENDAMENTO -->
             <form action="{{ route('criarAgendamento-Psicologia') }}" method="POST" id="agendamento-form" class="w-100" validate>
                 @csrf
 
@@ -108,7 +104,6 @@
                 <input type="hidden" name="status_agend" value="Em aberto"/>
                 <input type="hidden" name="usuario_id" value="{{ session('usuario')->ID_USUARIO_CLINICA }}">
 
-                <!-- PESQUISA POR PACIENTE -->
                 <div class="mb-3 position-relative">
                     <label for="select-paciente" class="form-label">Paciente</label>
                     <select id="select-paciente" name="paciente_id" placeholder="Pesquisar paciente por nome ou CPF..." autocomplete="off" data-old-id="{{ old('paciente_id') }}"></select>
@@ -121,7 +116,6 @@
 
                 <div class="row g-3">
 
-                    <!-- RECORRENCIA -->
                     <div class="col-12 mb-2">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" value="1" id="temRecorrencia" name="tem_recorrencia">
@@ -131,7 +125,6 @@
                         </div>
                     </div>
 
-                    <!-- SELECAO DE SERVICO -->
                     <div class="col-sm-6 col-md-3 position-relative">
                         <label for="servico" class="form-label">
                             Serviço
@@ -142,19 +135,16 @@
                         <select id="select-servico" name="id_servico" placeholder="Serviço do Atendimento..." autocomplete="off" data-old-id="{{ old('id_servico') }}" ></select>
                     </div>
 
-                    <!-- DIA DO AGENDAMENTO -->
                     <div class="col-sm-6 col-md-3">
                         <label for="data" class="form-label">Dia</label>
                         <input type="text" id="data" name="dia_agend" class="form-control" value="{{ old('dia_agend') }}" placeholder="Selecione o dia">
                     </div>
 
-                    <!-- HORÁRIO DE INÍCIO -->
                     <div class="col-sm-6 col-md-3">
                         <label for="hr_ini" class="form-label">Horário Início</label>
                         <input type="text" id="hr_ini" name="hr_ini" class="form-control" value="{{ old('hr_ini') }}">
                     </div>
 
-                    <!-- HORÁRIO FINAL -->
                     <div class="col-sm-6 col-md-3">
                         <label for="hr_fim" class="form-label">Horário Fim</label>
                         <input type="text" id="hr_fim" name="hr_fim" class="form-control" value="{{ old('hr_fim') }}">
@@ -202,7 +192,6 @@
                         Caso não selecione "dias da semana" e uma "duração" ou "data fim", serão gerados agendamentos semanais por 1 mês, no mesmo dia da semana do campo "Dia".
                     </div>
 
-                    <!-- VALOR -->
                     <div class="col-sm-6 col-md-3">
                         <label for="valor_agend" class="form-label">Valor</label>
                         <div class="input-group">
@@ -211,14 +200,12 @@
                         </div>
                     </div>
 
-                    <!-- SELEÇÃO DE LOCAL -->
                     <div class="col-sm-6 col-md-3 position-relative">
                         <input type="hidden" name="id_sala_clinica" id="id_sala_clinica">
                         <label for="select-local" class="form-label">Local</label>
                         <select id="select-local" name="id_sala_clinica" placeholder="Local do atendimento..." autocomplete="off" data-old-id="{{ old('id_sala_clinica') }}"></select>
                     </div>
 
-                    <!-- SELEÇAO DE ALUNO -->
                     <div class="col-md-6 position-relative">
                          <input type="hidden" name="ID_ALUNO" id="ID_ALUNO">
                         <label for="select-aluno" class="form-label">Aluno</label>
@@ -226,7 +213,6 @@
                         <small id="aluno-count" class="text-muted mt-1 d-block"></small>
                     </div>
                               
-                    <!-- OBSERVAÇÕES -->
                     <div class="col-12">
                         <label for="observacoes" class="form-label">Observações</label>
                         <textarea name="observacoes" id="observacoes" class="form-control" placeholder="Observações..." rows="3">{{ old('observacoes') }}</textarea>
@@ -249,10 +235,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
-<!-- TOM SELECT -->
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
-<!-- IMPEDE EMVIO CASO USUÁRIO TECLE ENTER SEM QUERER -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('agendamento-form');
@@ -270,7 +254,6 @@
     const pacienteIdInput = document.getElementById('paciente_id');
 </script>
 
-<!-- BUSCA DE PACIENTES -->
 <script>
 
     // BUSCA DE VALOR ANTIGO, CASO EXISTA
@@ -430,18 +413,69 @@
         }
     });
 
-    // Inicializa select de duração da recorrência
-    new TomSelect('#duracao_meses_recorrencia', {});
 </script>
 
-<!-- SCRIPT DE SELEÇÃO DE RECORRÊNCIA -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // --- LÓGICA DE RECORRÊNCIA (UNIFICADA E CORRIGIDA) ---
         const temRecorrenciaCheckbox = document.getElementById('temRecorrencia');
         const recorrenciaCampos = document.getElementById('recorrenciaCampos');
         const msgRecorrencia = document.getElementById('msg-recorrencia');
         const recorrenciaInput = document.getElementById('recorrencia');
         const diasSemanaBtns = document.querySelectorAll('#diasSemanaBtns button');
+
+        // --- INICIALIZAÇÃO DO FLATPICKR ---
+        flatpickr.localize(flatpickr.l10ns.pt);
+        const commonDateConfig = {
+            dateFormat: "Y-m-d", 
+            altInput: true,
+            altFormat: "d/m/Y",
+            locale: "pt",
+            allowInput: true,
+        };
+        const commonTimeConfig = {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 15,
+            allowInput: true,
+        };
+        flatpickr("#data", {...commonDateConfig, minDate: "today"});
+        flatpickr("#hr_ini", commonTimeConfig);
+        flatpickr("#hr_fim", commonTimeConfig);
+        
+        // --- CORREÇÃO PRINCIPAL AQUI ---
+        // 1. Inicializamos o Flatpickr e guardamos a instância dele
+        const fpDataFimInstance = flatpickr("#data_fim_recorrencia", {...commonDateConfig, minDate: "today"});
+        // 2. Pegamos a referência para o INPUT VISÍVEL que o Flatpickr cria
+        const inputDataFimVisivel = fpDataFimInstance.altInput;
+        const inputDataFim = document.getElementById('data_fim_recorrencia');
+        // Inicializa o TomSelect e guarda a instância
+        const tsDuracao = new TomSelect('#duracao_meses_recorrencia', {});
+
+        // Função para bloquear/desbloquear os campos
+        function atualizarBloqueioCampos() {
+
+            const duracaoPreenchida = tsDuracao.getValue() !== '';
+            const dataFimPreenchida = inputDataFim.value !== '';
+
+            // Agora desativamos o INPUT VISÍVEL
+            inputDataFimVisivel.disabled = duracaoPreenchida;
+
+            if (dataFimPreenchida) {
+                tsDuracao.disable();
+            } else {
+                tsDuracao.enable();
+            }
+        }
+
+        // Adiciona os "escutadores" de eventos
+        tsDuracao.on('change', atualizarBloqueioCampos);
+        // O evento agora é no input visível
+        inputDataFim.addEventListener('input', atualizarBloqueioCampos);
+        
+        // --- LÓGICA RESTANTE DA RECORRÊNCIA ---
         let container = document.getElementById('diasSemanaContainer');
         if (!container) {
             container = document.createElement('div');
@@ -482,64 +516,29 @@
                 recorrenciaCampos.classList.add('d-none');
                 msgRecorrencia.classList.add('d-none');
                 recorrenciaInput.value = '';
-                diasSemanaBtns.forEach(btn => {
+                diasSelecionadosBtns.forEach(btn => {
                     btn.classList.remove('active', 'btn-primary');
                     btn.classList.add('btn-outline-primary');
                 });
                 container.innerHTML = '';
-                document.getElementById('data_fim_recorrencia').value = '';
-                document.getElementById('duracao_meses_recorrencia').value = '';
+                
+                // Limpa os valores
+                fpDataFimInstance.clear();
+                tsDuracao.clear(); 
+                atualizarBloqueioCampos();
             }
         });
 
-        const selectDuracao = document.getElementById('duracao_meses_recorrencia');
-        const inputDataFim = document.getElementById('data_fim_recorrencia');
-
-        function atualizarCamposRecorrencia() {
-            inputDataFim.disabled = selectDuracao.value !== '';
-            selectDuracao.disabled = inputDataFim.value !== '';
+        // --- LÓGICA DOS ALERTAS E FORMATAÇÃO DE VALOR ---
+        const valorInput = document.getElementById('valor_agend');
+        if (valorInput) {
+            valorInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = (value / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                e.target.value = value;
+            });
         }
-
-        selectDuracao.addEventListener('change', atualizarCamposRecorrencia);
-        inputDataFim.addEventListener('input', atualizarCamposRecorrencia); // use input for flatpickr
-    });
-</script>
-
-<!-- SCRIPT DO FLATPICKR -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr.localize(flatpickr.l10ns.pt);
-        const commonDateConfig = {
-            dateFormat: "Y-m-d", 
-            altInput: true,
-            altFormat: "d/m/Y",
-            locale: "pt",
-            allowInput: true,
-        };
-        const commonTimeConfig = {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-            minuteIncrement: 15,
-            allowInput: true,
-        };
-        flatpickr("#data", {...commonDateConfig, minDate: "today"});
-        flatpickr("#hr_ini", commonTimeConfig);
-        flatpickr("#hr_fim", commonTimeConfig);
-        flatpickr("#data_fim_recorrencia", {...commonDateConfig, minDate: "today"});
-    });
-</script>
-
-<!-- FORMATAÇÃO DOS CAMPOS DE VALOR DE AGENDAMENTO -->
-<script>
-    document.getElementById('valor_agend').addEventListener('input', function (e) {
-        let value = e.target.value.replace(/\D/g, '');
-        value = (value / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        e.target.value = value;
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
+        
         const alertSuccess = document.getElementById('alert-success');
         if (alertSuccess) setTimeout(() => alertSuccess.remove(), 4000);
         
@@ -547,7 +546,6 @@
         if (alertError) setTimeout(() => alertError.remove(), 6000);
     });
 </script>
-
 
 </body>
 </html>
