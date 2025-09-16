@@ -276,10 +276,6 @@
                 const query = encodeURIComponent(data.input || '');
                 return `<div class="no-results">
                             Nenhum local encontrado. 
-                            <a href="/psicologia/criar-sala?DESCRICAO=${query}" 
-                            target="_blank" class="text-primary fw-bold">
-                            Criar nova sala
-                            </a>
                         </div>`;
             }
         }
