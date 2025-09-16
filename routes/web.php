@@ -162,7 +162,7 @@ Route::middleware([AuthMiddleware::class])
 
 
 Route::middleware([AuthMiddleware::class])
-    ->prefix('aluno')
+        ->prefix('aluno')
     ->group(function () {
 
     //----- MENU -----//
@@ -183,6 +183,8 @@ Route::middleware([AuthMiddleware::class])
     Route::get('/agendamento/{id}/editar', [AgendamentoController::class, 'editAgendamentoaluno'])->name('agendamentoaluno.edit');
     Route::put('/agendamento', [AgendamentoController::class, 'updateAgendamento'])->name('aluno.agendamento.update');
     Route::delete('/agendamento/{id}', [AgendamentoController::class, 'AlunoDeleteAgendamento'])->name('aluno.agendamento.delete');
+
+    Route::get('/pesquisar-local', [SalaController::class, 'getSala'])->name('pesquisarLocal-Aluno');
 
     //----- CONSULTAS (Visão do Aluno) -----//
     Route::get('/consultar-paciente/buscar', [PacienteController::class, 'getPacienteByNameCPFaluno'])->name('alunoGetPaciente');

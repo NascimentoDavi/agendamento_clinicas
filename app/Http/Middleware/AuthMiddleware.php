@@ -106,7 +106,7 @@ class AuthMiddleware
         };
 
         if (!$dadosSessao) {
-            return redirect()->route($loginRoute)->with('error', ucfirst($tipo) . ' sem permissão de acesso ao sistema.');
+            return redirect()->route($loginRoute)->with('error', 'Usuário sem permissão de acesso ao sistema.');
         }
 
         // 3. Sucesso! Grava os dados na sessão
