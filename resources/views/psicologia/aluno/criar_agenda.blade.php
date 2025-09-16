@@ -95,7 +95,7 @@
         <div class="col-12 shadow-lg shadow-dark p-4 bg-body-tertiary rounded">
 
             <!-- FORM DE AGENDAMENTO -->
-            <form action="{{ route('criarAgendamento-aluno') }}" method="POST" id="agendamento-form" class="w-100" validate>
+            <form action="{{ route('criarAgendamento-aluno') }}" method="POST" id="agendamento-form" class="w-100 needes-validation">
                 @csrf
 
                 <!-- VALORES PASSADOS NO FORMATO HIDDEN | USUÁRIO NÃO SELECIONA DIRETAMENTE -->
@@ -121,7 +121,7 @@
                 <!-- PESQUISA DE PACIENTE POR NOME OU CPF -->
                  <div class="mb-3 position-relative">
                     <label for="search-input" class="form-label">Paciente</label>
-                    <select id="search-input" name="paciente_id" placeholder="Pesquisar paciente por nome ou CPF..." autocomplete="off"></select>
+                    <select id="search-input" name="paciente_id" placeholder="Pesquisar paciente por nome ou CPF..." autocomplete="off" required></select>
                 </div>
 
                 <!-- SUBTÍTULO -->
@@ -134,26 +134,32 @@
 
                     <!-- DISCIPLINAS -->
                     <div class="col-sm-6 col-md-3 position-relative" style="position: relative;">
+
                         <label for="disciplina" class="form-label">
                             Disciplina
                         </label>
+                        
                         <label for="disciplina" class="form-label"></label>
-                        <select name="id_servico" id="disciplina" placeholder="Disciplina do Atendimento" autocomplete="off"></select>
+                        <select name="id_servico" id="disciplina" placeholder="Disciplina do Atendimento" autocomplete="off" required></select>
+
                     </div>
 
+                    <!-- DATA DO AGENDAMENTO -->
                     <div class="col-sm-6 col-md-3">
                         <label for="data" class="form-label">Dia</label>
-                        <input type="text" id="data" name="dia_agend" class="form-control" value="{{ old('dia_agend') }}" placeholder="Selecione o Dia">
+                        <input type="text" id="data" name="dia_agend" class="form-control" value="{{ old('dia_agend') }}" placeholder="Selecione o Dia" required>
                     </div>
 
+                    <!-- HORÁRIO INICIAL -->
                     <div class="col-sm-6 col-md-3">
                         <label for="hr_ini" class="form-label">Horário Início</label>
-                        <input type="text" id="hr_ini" name="hr_ini" class="form-control" value="{{ old('hr_ini') }}" disabled>
+                        <input type="text" id="hr_ini" name="hr_ini" class="form-control" value="{{ old('hr_ini') }}" disabled required>
                     </div>
 
+                    <!-- HORÁRIO FINAL -->
                     <div class="col-sm-6 col-md-3">
                         <label for="hr_fim" class="form-label">Horário Fim</label>
-                        <input type="text" id="hr_fim" name="hr_fim" class="form-control" value="{{ old('hr_fim') }}" disabled>
+                        <input type="text" id="hr_fim" name="hr_fim" class="form-control" value="{{ old('hr_fim') }}" disabled required>
                     </div>
 
                     <!-- Mensagem que aparece quando ativa recorrência -->
@@ -259,7 +265,7 @@
             const servicoId = document.querySelector('#disciplina').value;
             if (!servicoId) return callback(); // não carrega se não houver serviço
             
-            const url = `/psicologia/pesquisar-local?search=${encodeURIComponent(query)}&servico=${encodeURIComponent(servicoId)}`;
+            const url = `/aluno/pesquisar-local?search=${encodeURIComponent(query)}&servico=${encodeURIComponent(servicoId)}`;
             fetch(url)
                 .then(r => r.json())
                 .then(json => callback(json))

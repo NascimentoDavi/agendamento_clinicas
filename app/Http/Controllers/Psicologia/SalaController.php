@@ -62,14 +62,11 @@ class SalaController extends Controller
             });
 
         if ($idServico) {
-            // Recupera disciplina do serviço
             $servico = FaesaClinicaServico::find($idServico);
-
             if ($servico && $servico->DISCIPLINA) {
                 $disciplina = $servico->DISCIPLINA;
-
                 $query->where(function ($q) use ($disciplina) {
-                    $q->whereNull('DISCIPLINA') // salas sem disciplina sempre aparecem
+                    $q->whereNull('DISCIPLINA') // SALAS SEM DISCIPLINA SEMPRE APARECEM
                     ->orWhere('DISCIPLINA', $disciplina);
                 });
             }

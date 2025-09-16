@@ -62,9 +62,13 @@
     @endif
 
     <div class="container ms-3 me-3 mw-100">
+        
         <div class="row">
+            
+
              <x-page-title>
             </x-page-title>
+            
             <div class="col-12 shadow-lg shadow-dark p-4 bg-body-tertiary rounded">
 
                 <form action="{{ route('criarPaciente-Psicologia') }}" method="POST" class="needs-validation" id="pacienteForm">

@@ -436,16 +436,46 @@ class AgendamentoService
 
     private function _isHorarioDisponivel(string $data, string $horaInicio, string $horaFim): bool
     {
-        // Verifica se há algum bloqueio explícito que se sobreponha ao horário desejado
-        $temBloqueio = FaesaClinicaHorario::where('ID_CLINICA', self::ID_CLINICA)
-            ->where('BLOQUEADO', 'S')
+        $horaInicioCarbon = Carbon::parse($horaInicio);
+        $horaFimCarbon    = Carbon::parse($horaFim);
+
+        // Busca todos os horários que abrangem a data
+        $horariosDoDia = FaesaClinicaHorario::where('ID_CLINICA', self::ID_CLINICA)
             ->whereDate('DATA_HORARIO_INICIAL', '<=', $data)
             ->whereDate('DATA_HORARIO_FINAL', '>=', $data)
-            ->whereTime('HR_HORARIO_INICIAL', '<', $horaFim)
-            ->whereTime('HR_HORARIO_FINAL', '>', $horaInicio)
-            ->exists();
+            ->get();
 
-        return !$temBloqueio; // Se tem bloqueio, não está disponível
+        // Se não existe nenhum registro para o dia, permite qualquer horário
+        if ($horariosDoDia->isEmpty()) {
+            return true;
+        }
+
+        // Verifica se existe algum bloqueio que se sobreponha
+        foreach ($horariosDoDia as $h) {
+            if ($h->BLOQUEADO === 'S') {
+                $bloqInicio = Carbon::parse($h->HR_HORARIO_INICIAL);
+                $bloqFim    = Carbon::parse($h->HR_HORARIO_FINAL);
+
+                if ($horaInicioCarbon < $bloqFim && $horaFimCarbon > $bloqInicio) {
+                    return false; // sobreposição com bloqueio
+                }
+            }
+        }
+
+        // Verifica se existe atendimento que permita o horário
+        foreach ($horariosDoDia as $h) {
+            if ($h->BLOQUEADO === 'N') {
+                $atendInicio = Carbon::parse($h->HR_HORARIO_INICIAL);
+                $atendFim    = Carbon::parse($h->HR_HORARIO_FINAL);
+
+                if ($horaInicioCarbon >= $atendInicio && $horaFimCarbon <= $atendFim) {
+                    return true; // permitido
+                }
+            }
+        }
+
+        // Existe registro no dia, mas não se encaixa em nenhum atendimento → não permite
+        return false;
     }
 
     private function _isSalaAtiva(int $idSala): bool

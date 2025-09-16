@@ -15,7 +15,7 @@ class FaesaClinicaHorario extends Model
     protected $fillable = [
         'ID_HORARIO',
         'USUARIO',
-        'DT_HORARIO_INICIAL',
+        'DATA_HORARIO_INICIAL',
         'DATA_HORARIO_FINAL',
         'HR_HORARIO_INICIAL',
         'HR_HORARIO_FINAL',
@@ -25,7 +25,7 @@ class FaesaClinicaHorario extends Model
     ];
 
     protected $casts = [
-        'DT_HORARIO_INICIAL' => 'date',
+        'DATA_HORARIO_INICIAL' => 'date',
         'DATA_HORARIO_FINAL' => 'date',
         'HR_HORARIO_INICIAL' => 'string',
         'HR_HORARIO_FINAL' => 'string',
