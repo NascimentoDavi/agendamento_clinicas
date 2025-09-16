@@ -151,6 +151,8 @@ class PacienteController extends Controller
             'celular'    => 'required|string|max:20',
             'email'      => 'nullable|email|max:255',
             'municipio'  => 'required|string|max:255',
+            'nome_responsavel' => 'nullable|string|max:255',
+            'cpf_responsavel' => 'nullable|string|max:14',
         ], [
             'nome.required' => 'O nome do Paciente deve ser fornecido',
             'dt_nasc.required' => 'A data de nascimento deve ser fornecida',
@@ -161,12 +163,14 @@ class PacienteController extends Controller
             'num.required' => 'O número do endereço deve ser fornecido',
             'endereco.required' => 'O logradouro do endereço deve ser fornecido',
             'municipio.required' => 'O município do endereço deve ser fornecido',
+            'nome_responsavel.max' => 'O nome do responsávle deve ter no máximo 255 caractéres',
+            'cpf_responsavel.max' => 'O CPF do responsável deve ter no máximo 14 digitos',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
-            ], 422); // HTTP 422 Unprocessable Entity
+            ], 422);
         }
 
         $validatedData = $validator->validated();
@@ -185,7 +189,9 @@ class PacienteController extends Controller
             $paciente->CEP = $validatedData['cep'] ?? $paciente->CEP;
             $paciente->FONE_PACIENTE = $validatedData['celular'] ?? $paciente->FONE_PACIENTE;
             $paciente->E_MAIL_PACIENTE = $validatedData['email'] ?? $paciente->E_MAIL_PACIENTE;
-            $paciente->MUNICIPIO = $validatedData['MUNICIPIO'] ?? $paciente->MUNICIPIO;
+            $paciente->MUNICIPIO = $validatedData['municipio'] ?? $paciente->MUNICIPIO;
+            $paciente->NOME_RESPONSAVEL = $validatedData['nome_responsavel'] ?? $paciente->NOME_RESPONSAVEL;
+            $paciente->CPF_RESPONSAVEL = $validatedData['cpf_responsavel'] ?? $paciente->CPF_RESPONSAVEL;
 
             $paciente->save();
 

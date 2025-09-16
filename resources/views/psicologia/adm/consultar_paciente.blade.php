@@ -292,6 +292,7 @@
                 <div class="modal-body">
                     <form id="editPacienteForm">
 
+                        <!-- INFORMAÇÕES PESSOAIS PACIENTE -->
                         <h6>Informações Pessoais</h6>
                         <hr>
 
@@ -329,6 +330,25 @@
 
                         </div>
 
+                        <!-- INFORMAÇÕES DO RESPONSÁVEL -->
+                        <h6 class="mt-3">Informações do Responsável</h6>
+                        <hr>
+
+                         <div class="row g-3">
+
+                            <div class="col-md-6 form-floating">
+                                <input type="text" class="form-control" id="editPacienteResponsavelNome" name="nome_responsavel" placeholder="Nome do Responsável" value="{{ old('nome_responsavel') }}">
+                                <label for="editPacienteResponsavelNome">Nome do Responsável</label>
+                            </div>
+
+                            <div class="col-md-6 form-floating">
+                                <input type="text" class="form-control" id="editPacienteResponsavelCPF" name="cpf_responsavel" placeholder="CPF do Responsável">
+                                <label for="editPacienteResponsavelCPF">CPF do Responsável</label>
+                            </div>
+
+                        </div>
+
+                        <!-- INFORMAÇÕES DE ENDEREÇO -->
                         <h6 class="mt-4">Endereço</h6>
                         <hr>
 
@@ -368,8 +388,10 @@
                                 <input type="text" class="form-control" id="editPacienteUF" name="uf" placeholder="UF">
                                 <label for="editPacienteUF">UF</label>
                             </div>
+
                         </div>
 
+                        <!-- INFORMAÇÕES DE CONTATO -->
                         <h6 class="mt-4">Contato</h6>
                         <hr>
 
@@ -451,8 +473,11 @@
             let limiteRegistros = limiteSelect ? (parseInt(limiteSelect.value) || 10) : 10; 
 
             function ativarEventosEditar() {
+
                 document.querySelectorAll('.editar-btn').forEach(button => {
+                    
                     button.addEventListener('click', () => {
+                        
                         selectedPaciente = {
                             id: button.getAttribute('data-id'),
                             status: button.getAttribute('data-status') ?? 'nada',
@@ -469,9 +494,13 @@
                             celular: button.getAttribute('data-celular'),
                             email: button.getAttribute('data-email'),
                             municipio: button.getAttribute('data-municipio'),
+                            nome_responsavel: button.getAttribute('data-nome-responsavel'),
+                            cpf_responsavel: button.getAttribute('data-cpf-responsavel'),
                         };
+
                         document.getElementById('modal-paciente-nome').textContent = `Deseja editar o paciente: ${selectedPaciente.nome}?`;
                         new bootstrap.Modal(document.getElementById('confirmEditModal')).show();
+
                     });
                 });
             }
@@ -523,31 +552,64 @@
                             return;
                         }
                         const limite = parseInt(limiteSelect.value);
+
                         const pacientesVisiveis = pacientes.slice(0, limite);
+                        
                         document.getElementById('contador-registros').innerHTML = `<span>Mostrando ${pacientesVisiveis.length} de ${pacientes.length}</span>`;
+                        
                         pacientesVisiveis.forEach(paciente => {
+                            
                             const row = document.createElement('tr');
+
                             const isInativo = paciente.STATUS === 'Inativo';
+
+                            // DEPENDENDO DO STATUS DO PACIENTE, MOSTRA UM BOTÃO
                             const btnStatus = isInativo 
+                            
                                 ? `<button type="button" class="btn btn-sm btn-success ativar-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"><i class="bi bi-check2"></i> <span class="d-none d-sm-inline">Reativar</span></button>`
+
                                 : `<button type="button" class="btn btn-sm btn-danger excluir-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"><i class="bi bi-trash"></i> <span class="d-none d-sm-inline">Inativar</span></button>`;
+                                
+                            // CONTEÚDO DAS LINHAS DA TABELA
                             row.innerHTML = `
+
                                 <td data-label="Nome">${paciente.NOME_COMPL_PACIENTE}</td>
+
                                 <td data-label="CPF">${paciente.CPF_PACIENTE}</td>
+                                
                                 <td data-label="Nascimento">${paciente.DT_NASC_PACIENTE ? formatarDataBR(paciente.DT_NASC_PACIENTE) : '-'}</td>
+                                
                                 <td data-label="Sexo">${paciente.SEXO_PACIENTE ?? '-'}</td>
+                                
                                 <td data-label="Telefone">${paciente.FONE_PACIENTE ?? '-'}</td>
+                                
                                 <td data-label="Email">${paciente.E_MAIL_PACIENTE ?? '-'}</td>
+                                
                                 <td data-label="Status">${paciente.STATUS ?? '-'}</td>
+                                
                                 <td data-label="Ações" class="actions-cell">
+
                                     <div class="d-flex flex-wrap justify-content-center gap-1">
+
                                         <button type="button" class="btn btn-sm btn-warning editar-btn"
+
                                             data-id="${paciente.ID_PACIENTE}" data-status="${paciente.STATUS ?? '-'}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"
+                                            
                                             data-cpf="${paciente.CPF_PACIENTE ?? ''}" data-dt_nasc="${paciente.DT_NASC_PACIENTE ?? ''}" data-sexo="${paciente.SEXO_PACIENTE ?? ''}"
+
                                             data-endereco="${paciente.ENDERECO ?? ''}" data-num="${paciente.END_NUM ?? ''}" data-complemento="${paciente.COMPLEMENTO ?? ''}"
+
                                             data-bairro="${paciente.BAIRRO ?? ''}" data-uf="${paciente.UF ?? ''}" data-cep="${paciente.CEP ?? ''}"
-                                            data-celular="${paciente.FONE_PACIENTE ?? ''}" data-email="${paciente.E_MAIL_PACIENTE ?? ''}" data-municipio="${paciente.MUNICIPIO ?? ''}">
+
+                                            data-celular="${paciente.FONE_PACIENTE ?? ''}" data-email="${paciente.E_MAIL_PACIENTE ?? ''}" data-municipio="${paciente.MUNICIPIO ?? ''}"
+
+                                            data-nome-responsavel="${paciente.NOME_RESPONSAVEL ?? ''}"
+
+                                            data-cpf-responsavel="${paciente.CPF_RESPONSAVEL ?? ''}"
+                                        >
+
                                             <i class="bi bi-pencil"></i> <span class="d-none d-sm-inline">Editar</span>
+
                                         </button>
                                         <button type="button" class="btn btn-sm btn-secondary historico-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE}">
                                             <i class="bi bi-clock-history"></i> <span class="d-none d-sm-inline">Histórico</span>
@@ -569,47 +631,120 @@
             }
 
             function abrirModalEdicao() {
+
                 if (!selectedPaciente) return;
+
                 document.getElementById('editPacienteNome').value = selectedPaciente.nome || '';
+
                 let status = document.getElementById('editPacienteStatus').value = selectedPaciente.status || '';
+
                 const cpfInput = document.getElementById('editPacienteCPF');
-                if (cpfInput) { cpfInput.value = selectedPaciente.cpf || ''; cpfInput.readOnly = (status !== 'Inativo'); }
-                document.getElementById('editPacienteDTNASC').value = selectedPaciente.dt_nasc ? selectedPaciente.dt_nasc.split('T')[0] : '';
-                document.getElementById('editPacienteSEXO').value = selectedPaciente.sexo || '';
-                document.getElementById('editPacienteENDERECO').value = selectedPaciente.endereco || '';
-                document.getElementById('editPacienteNUM').value = selectedPaciente.num || '';
-                document.getElementById('editPacienteCOMPLEMENTO').value = selectedPaciente.complemento || '';
-                document.getElementById('editPacienteBAIRRO').value = selectedPaciente.bairro || '';
-                document.getElementById('editPacienteUF').value = selectedPaciente.uf || '';
-                document.getElementById('editPacienteCEP').value = selectedPaciente.cep || '';
-                document.getElementById('editPacienteCELULAR').value = selectedPaciente.celular || '';
-                document.getElementById('editPacienteEMAIL').value = selectedPaciente.email || '';
-                document.getElementById('editPacienteMUNICIPIO').value = selectedPaciente.municipio || '';
-                bootstrap.Modal.getInstance(document.getElementById('confirmEditModal'))?.hide();
-                new bootstrap.Modal(document.getElementById('editPacienteModal')).show();
+                
+                if (cpfInput) 
+
+                    {
+                        // CASO PACIENTE ESTEJA INATIVO, PERMITE EDITAR CPF
+                        cpfInput.value = selectedPaciente.cpf || ''; cpfInput.readOnly = (status !== 'Inativo');
+                    }
+                    
+                    document.getElementById('editPacienteDTNASC').value = selectedPaciente.dt_nasc ? selectedPaciente.dt_nasc.split('T')[0] : '';
+                    document.getElementById('editPacienteSEXO').value = selectedPaciente.sexo || '';
+                    document.getElementById('editPacienteENDERECO').value = selectedPaciente.endereco || '';
+                    document.getElementById('editPacienteNUM').value = selectedPaciente.num || '';
+                    document.getElementById('editPacienteCOMPLEMENTO').value = selectedPaciente.complemento || '';
+                    document.getElementById('editPacienteBAIRRO').value = selectedPaciente.bairro || '';
+                    document.getElementById('editPacienteUF').value = selectedPaciente.uf || '';
+                    document.getElementById('editPacienteCEP').value = selectedPaciente.cep || '';
+                    document.getElementById('editPacienteCELULAR').value = selectedPaciente.celular || '';
+                    document.getElementById('editPacienteEMAIL').value = selectedPaciente.email || '';
+                    document.getElementById('editPacienteMUNICIPIO').value = selectedPaciente.municipio || '';
+                    document.getElementById('editPacienteResponsavelNome').value = selectedPaciente.nome_responsavel || '';
+                    document.getElementById('editPacienteResponsavelCPF').value = selectedPaciente.cpf_responsavel || '';
+
+                    bootstrap.Modal.getInstance(document.getElementById('confirmEditModal'))?.hide();
+                    
+                    new bootstrap.Modal(document.getElementById('editPacienteModal')).show();
             }
 
             function enviarEdicao(e) {
                 e.preventDefault();
-                if (!selectedPaciente || !selectedPaciente.id) { alert('Paciente não selecionado.'); return; }
+
+                const dtNascInput = document.getElementById("editPacienteDTNASC");
+                const responsavelNome = document.getElementById("editPacienteResponsavelNome");
+                const responsavelCPF = document.getElementById("editPacienteResponsavelCPF");
+
+                function calcularIdade(dataNasc) {
+                    const hoje = new Date();
+                    const nascimento = new Date(dataNasc);
+                    let idade = hoje.getFullYear() - nascimento.getFullYear();
+                    const mes = hoje.getMonth() - nascimento.getMonth();
+                    if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                        idade--;
+                    }
+                    return idade;
+                }
+
+                const dataNasc = dtNascInput.value;
+                if (dataNasc) {
+                    const idade = calcularIdade(dataNasc);
+                    if (idade < 18) {
+                        if (!responsavelNome.value.trim() || !responsavelCPF.value.trim()) {
+                            // 🚨 impede envio e mantém o modal aberto
+                            alert("Paciente menor de idade: é obrigatório informar Nome e CPF do responsável.");
+                            return;
+                        }
+                    }
+                }
+
+                if (!selectedPaciente || !selectedPaciente.id) {
+                    alert('Paciente não selecionado.');
+                    return;
+                }
+
                 const cpfLimpo = document.getElementById('editPacienteCPF').value.replace(/[^\d]/g, ''); 
+
                 const dados = {
-                    nome: document.getElementById('editPacienteNome').value, cpf: cpfLimpo, status: document.getElementById('editPacienteStatus').value ?? '-',
-                    dt_nasc: document.getElementById('editPacienteDTNASC').value, sexo: document.getElementById('editPacienteSEXO').value,
-                    endereco: document.getElementById('editPacienteENDERECO').value, num: document.getElementById('editPacienteNUM').value,
-                    complemento: document.getElementById('editPacienteCOMPLEMENTO').value, bairro: document.getElementById('editPacienteBAIRRO').value,
-                    uf: document.getElementById('editPacienteUF').value, cep: document.getElementById('editPacienteCEP').value,
-                    celular: document.getElementById('editPacienteCELULAR').value, email: document.getElementById('editPacienteEMAIL').value,
+                    nome: document.getElementById('editPacienteNome').value,
+                    cpf: cpfLimpo,
+                    status: document.getElementById('editPacienteStatus').value ?? '-',
+                    dt_nasc: document.getElementById('editPacienteDTNASC').value,
+                    sexo: document.getElementById('editPacienteSEXO').value,
+                    endereco: document.getElementById('editPacienteENDERECO').value,
+                    num: document.getElementById('editPacienteNUM').value,
+                    complemento: document.getElementById('editPacienteCOMPLEMENTO').value,
+                    bairro: document.getElementById('editPacienteBAIRRO').value,
+                    uf: document.getElementById('editPacienteUF').value,
+                    cep: document.getElementById('editPacienteCEP').value,
+                    celular: document.getElementById('editPacienteCELULAR').value,
+                    email: document.getElementById('editPacienteEMAIL').value,
                     municipio: document.getElementById('editPacienteMUNICIPIO').value,
+                    nome_responsavel: responsavelNome.value,
+                    cpf_responsavel : responsavelCPF.value,
                 };
+
                 fetch(`editar-paciente/${selectedPaciente.id}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                    },
                     body: JSON.stringify(dados),
                 })
-                .then(async response => { if (!response.ok) { const errorData = await response.json(); throw errorData; } return response.json(); })
-                .then(data => { bootstrap.Modal.getInstance(document.getElementById('editPacienteModal'))?.hide(); location.reload(); })
-                .catch(error => { console.error("Erros de validação:", error.errors); alert(Object.values(error.errors).join("\n")); });
+                .then(async response => { 
+                    if (!response.ok) { 
+                        const errorData = await response.json(); 
+                        throw errorData; 
+                    } 
+                    return response.json(); 
+                })
+                .then(data => { 
+                    bootstrap.Modal.getInstance(document.getElementById('editPacienteModal'))?.hide(); 
+                    location.reload(); 
+                })
+                .catch(error => { 
+                    console.error("Erros de validação:", error.errors); 
+                    alert(Object.values(error.errors).join("\n")); 
+                });
             }
 
             function enviarExclusao(e) {
@@ -723,6 +858,46 @@
             }
             e.target.value = value;
         });
+    </script>
+
+    <!-- VALIDA PREENCHIMENTO DE DADOS DO RESPONSÁVEL CASO ELE SEJA MENOR DE IDADE NO MODAL DE EDIT -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("editPacienteForm");
+            const dtNascInput = document.getElementById("editPacienteDTNASC");
+            const responsavelNome = document.getElementById("editPacienteResponsavelNome");
+            const responsavelCPF = document.getElementById("editPacienteResponsavelCPF");
+
+            function calcularIdade(dataNasc) {
+                const hoje = new Date();
+                const nascimento = new Date(dataNasc);
+                let idade = hoje.getFullYear() - nascimento.getFullYear();
+                const mes = hoje.getMonth() - nascimento.getMonth();
+
+                if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                    idade--;
+                }
+                return idade;
+            }
+
+            form.addEventListener("submit", (e) => {
+                const dataNasc = dtNascInput.value;
+
+                if (dataNasc) {
+                    const idade = calcularIdade(dataNasc);
+
+                    if (idade < 18) {
+                        if (!responsavelNome.value.trim() || !responsavelCPF.value.trim()) {
+                            e.preventDefault();
+                            alert("Paciente menor de idade: é obrigatório informar Nome e CPF do responsável.");
+                            return;
+                        }
+                    }
+                }
+            });
+
+        });
+
     </script>
 </body>
 </html>

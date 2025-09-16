@@ -553,7 +553,6 @@ class AgendamentoService
             'LOCAL'              => $localAgend,
             'ID_AGEND_REMARCADO' => $dados['id_agend_remarcado'] ?? null,
         ]);
-
         return $novoAgendamento;
     }
 

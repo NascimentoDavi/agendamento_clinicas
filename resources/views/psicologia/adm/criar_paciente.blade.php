@@ -326,5 +326,52 @@
         applyMask('cpf_responsavel', cpfMask);
         applyMask('telefone', phoneMask);
     </script>
+
+    <!-- SCRIPT PARA OBRIGATORIEDADE DE PREENCHIMENTO DOS CAMPOS DE RESPONSÁVEL -->
+     <script>
+        // Função para calcular idade
+        function calcularIdade(dataNascimento) {
+            const hoje = new Date();
+            const nascimento = new Date(dataNascimento);
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mes = hoje.getMonth() - nascimento.getMonth();
+
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                idade--;
+            }
+            return idade;
+        }
+
+        // Função para validar responsável
+        function validarResponsavel() {
+            const dtNasc = document.getElementById('dt_nasc').value;
+            const nomeResp = document.getElementById('nome_responsavel');
+            const cpfResp = document.getElementById('cpf_responsavel');
+
+            if (dtNasc) {
+                const idade = calcularIdade(dtNasc);
+
+                if (idade < 18) {
+                    nomeResp.setAttribute('required', 'true');
+                    cpfResp.setAttribute('required', 'true');
+
+                    nomeResp.previousElementSibling.innerHTML = 'Nome Completo do Responsável <span class="required-field">*</span>';
+                    cpfResp.previousElementSibling.innerHTML = 'CPF do Responsável <span class="required-field">*</span>';
+                } else {
+                    nomeResp.removeAttribute('required');
+                    cpfResp.removeAttribute('required');
+
+                    nomeResp.previousElementSibling.innerHTML = 'Nome Completo';
+                    cpfResp.previousElementSibling.innerHTML = 'CPF do Responsável';
+                }
+            }
+        }
+
+        // Ativar validação sempre que a data de nascimento mudar
+        document.getElementById('dt_nasc').addEventListener('change', validarResponsavel);
+
+        // Rodar validação inicial (ex: quando carrega página com old input)
+        window.addEventListener('DOMContentLoaded', validarResponsavel);
+    </script>
 </body>
 </html>
