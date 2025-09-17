@@ -16,6 +16,48 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
+
+        /* reset box sizing to avoid unexpected overflow calculations */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        /* container that holds the table: enable independent horizontal scrolling */
+        #tabela {
+            overflow-x: auto;              /* habilita scroll horizontal sempre que necessário */
+            overflow-y: auto;              /* mantém scroll vertical */
+            -webkit-overflow-scrolling: touch;
+            max-height: 65vh;
+            border-radius: 0.375rem;
+            box-sizing: border-box;
+        }
+
+        /* make table use a fixed layout so cells can shrink and wrap instead of forcing page overflow */
+        .table-cards {
+            width: 100%;
+            table-layout: fixed; /* força colunas a dividir o espaço disponível */
+            border-collapse: collapse;
+            min-width: 0; /* importante para permitir encolhimento */
+        }
+
+        /* allow breaking long words / values inside cells */
+        .table-cards th,
+        .table-cards td {
+            white-space: normal !important;   /* permite quebra de linha */
+            word-break: break-word;           /* quebra palavras longas */
+            overflow-wrap: anywhere;          /* ajuda em strings sem espaços */
+            vertical-align: middle;
+            min-width: 0;                     /* evita que células imponham largura mínima */
+        }
+
+        /* evitar que os grupos de input do formulário forcem largura mínima */
+        #search-form .row > [class*="col-"] {
+            min-width: 0; /* permite que colunas encolham */
+        }
+        #search-form .input-group,
+        #search-form .form-control,
+        #search-form .form-select,
+        #search-form .btn {
+            min-width: 0;
+        }
         .shadow-dark {
             box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
         }
@@ -179,7 +221,7 @@
 
                 <div class="w-100">
                     <h5 class="mb-3">Resultados</h5>
-                    <div class="border rounded" style="max-height: 55vh; overflow-y: auto;">
+                    <div id="tabela" class="border rounded" style="max-height: 55vh; overflow-y: auto;">
                         <table class="table table-hover table-bordered align-middle mb-0 table-cards">
                             <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
                                 <tr>

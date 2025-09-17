@@ -18,26 +18,64 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
-        #limit-container {
-            margin-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px; 
-            flex-wrap: wrap;
+        /* reset box sizing to avoid unexpected overflow calculations */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        /* container that holds the table: enable independent horizontal scrolling */
+        #tabela {
+            overflow-x: auto;              /* habilita scroll horizontal sempre que necessário */
+            overflow-y: auto;              /* mantém scroll vertical */
+            -webkit-overflow-scrolling: touch;
+            max-height: 65vh;
+            border-radius: 0.375rem;
+            box-sizing: border-box;
         }
-        #limitador-registros {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+
+        /* make table use a fixed layout so cells can shrink and wrap instead of forcing page overflow */
+        .table-cards {
+            width: 100%;
+            table-layout: fixed; /* força colunas a dividir o espaço disponível */
+            border-collapse: collapse;
+            min-width: 0; /* importante para permitir encolhimento */
         }
-        .flatpickr-input {
-            background-color: #fff;
+
+        /* allow breaking long words / values inside cells */
+        .table-cards th,
+        .table-cards td {
+            white-space: normal !important;   /* permite quebra de linha */
+            word-break: break-word;           /* quebra palavras longas */
+            overflow-wrap: anywhere;          /* ajuda em strings sem espaços */
+            vertical-align: middle;
+            min-width: 0;                     /* evita que células imponham largura mínima */
         }
+
+        /* evitar que os grupos de input do formulário forcem largura mínima */
+        #search-form .row > [class*="col-"] {
+            min-width: 0; /* permite que colunas encolham */
+        }
+        #search-form .input-group,
+        #search-form .form-control,
+        #search-form .form-select,
+        #search-form .btn {
+            min-width: 0;
+        }
+
+        /* reduzir impacto das ações (botões) na largura da tabela */
+        .agendamento-actions {
+            min-width: 1px;
+            white-space: nowrap; /* manter botões lado a lado */
+        }
+
+        .agendamento-actions .btn:hover {
+            filter: brightness(85%);
+            transition: filter 0.2s ease-in-out;
+        }
+
         .shadow-dark {
             box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
         }
 
+        /* pequenas melhorias no visual das alerts animadas */
         @keyframes slideDownFadeOut {
             0%   { transform: translate(-50%, -100%); opacity: 0; }
             10%  { transform: translate(-50%, 0); opacity: 1; }
@@ -49,11 +87,7 @@
             z-index: 1050;
         }
 
-        .agendamento-actions .btn:hover {
-            filter: brightness(85%);
-            transition: filter 0.2s ease-in-out;
-        }
-        
+        /* mobile: manter seu comportamento atual (cards) — sem mudanças */
         @media (max-width: 992px) {
             .table-cards thead {
                 display: none;
@@ -66,20 +100,21 @@
 
             .table-cards tr {
                 margin-bottom: 1rem;
-                border: 3px solid #131313ff; /* cor da borda do card */
-                border-radius: 0.5rem;  /* cantos arredondados */
+                border: 3px solid #131313ff;
+                border-radius: 0.5rem;
                 margin-top: 20px;
-                box-shadow: 0 10px 4px rgba(0, 0, 0, 0.08); /* sombra leve para efeito card */
-                background-color: #fff; /* fundo branco */
+                box-shadow: 0 10px 4px rgba(0, 0, 0, 0.08);
+                background-color: #fff;
             }
 
             .table-cards td {
-                text-align: right; 
-                padding-left: 50%; 
+                text-align: right;
+                padding-left: 50%;
                 position: relative;
                 border: none;
                 padding-top: 0.5rem;
                 padding-bottom: 0.5rem;
+                white-space: normal;
             }
 
             .table-cards td:not(:last-child) {
@@ -194,11 +229,11 @@
                                 <button type="button" class="btn btn-outline-secondary clear-input" data-target="local-input"><i class="bi bi-x"></i></button>
                             </div>
                         </div>
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex gap-2">
-                             <button type="submit" class="btn btn-primary w-100">
-                                Pesquisar
+                        <div class="col-12 col-lg-auto d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Pesquisar
                             </button>
-                            <button type="button" class="btn btn-outline-secondary" id="btnClearFilters" title="Limpar Filtros">
+                            <button type="button" class="btn btn-outline-secondary" id="btnClearFilters">
                                 Limpar
                             </button>
                         </div>
@@ -209,7 +244,7 @@
 
                 <div class="w-100">
                     <h5 class="mb-3 text-center">Resultados</h5>
-                    <div id="tabela" class="border rounded table-responsive" style="max-height: 65vh; overflow-y: auto;">
+                    <div id="tabela" class="border rounded">
                         <table class="table table-hover table-bordered align-middle mb-0 table-cards">
                             <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
                                 <tr>
@@ -389,7 +424,7 @@
                     input.value = "";
                 }
                 input.dispatchEvent(new Event('input'));
-                input.dispatchEvent(new Event('change')); 
+                input.dispatchEvent(new Event('change'));
             });
         });
     </script>
