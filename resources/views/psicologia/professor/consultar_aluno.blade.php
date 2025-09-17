@@ -46,6 +46,15 @@
         .accordion-body {
             padding: .75rem 1rem;
         }
+        .accordion-body .list-group-item {
+            background-color: #e9ecef;
+            padding-left: 1.5rem; 
+        }
+
+        .accordion-body .list-group-item:hover {
+            background-color: #c3c7ca; 
+        }
+
     </style>
 </head>
 

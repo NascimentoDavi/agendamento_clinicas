@@ -428,7 +428,6 @@
             altInput: true,
             altFormat: "d/m/Y",
             allowInput: true,
-            defaultDate: "today"
         });
 
         const startTimePicker = flatpickr("#start-time-input", {

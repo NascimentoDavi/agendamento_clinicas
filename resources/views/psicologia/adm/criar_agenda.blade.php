@@ -31,7 +31,6 @@
         }
 
         #alert-success, #alert-error {
-            animation: slideDownFadeOut 5s ease forwards;
             max-width: 90%;
         }
 
@@ -64,27 +63,31 @@
 @include('components.navbar')
 
 @if ($errors->any())
-    <div id="alert-error" class="alert alert-danger shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;">
+    <div id="alert-error" class="alert alert-danger alert-dismissible fade show shadow text-center position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;" role="alert">
         <strong>Ops!</strong> Corrija os itens abaixo:
         <ul class="mb-0 mt-1 list-unstyled">
             @foreach ($errors->all() as $error)
                 <li><i class="bi bi-exclamation-circle-fill me-1"></i> {{ $error }}</li>
             @endforeach
         </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
     </div>
 @endif
 
 @if(session('success'))
-    <div id="alert-success" class="alert alert-success text-center shadow position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050;">
+    <div id="alert-success" class="alert alert-success alert-dismissible fade show text-center shadow position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050;" role="alert">
         {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
     </div>
 @endif
 
 @if(session('error'))
-    <div id="alert-error" class="alert alert-danger text-center shadow position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;">
+    <div id="alert-error" class="alert alert-danger alert-dismissible fade show text-center shadow position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1050; max-width: 90%;" role="alert">
         {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
     </div>
 @endif
+
 
 <div class="container ms-3 me-3 mw-100">
 
@@ -539,11 +542,6 @@
             });
         }
         
-        const alertSuccess = document.getElementById('alert-success');
-        if (alertSuccess) setTimeout(() => alertSuccess.remove(), 4000);
-        
-        const alertError = document.getElementById('alert-error');
-        if (alertError) setTimeout(() => alertError.remove(), 6000);
     });
 </script>
 
