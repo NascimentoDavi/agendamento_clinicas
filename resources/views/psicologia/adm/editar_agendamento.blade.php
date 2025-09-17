@@ -374,7 +374,7 @@
             new TomSelect('#select-aluno', {
                 valueField: 'ID_ALUNO',
                 labelField: 'NOME_COMPL',
-                searchField: ['NOME_COMPL', 'ALUNO'],
+                searchField: ['ID_ALUNO', 'NOME_COMPL'],
                 create: false,
                 load: (query, callback) => {
                     const url = `/psicologia/listar-alunos?search=${encodeURIComponent(query)}`;

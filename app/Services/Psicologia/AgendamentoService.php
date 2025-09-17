@@ -44,7 +44,7 @@ class AgendamentoService
             $aluno = $request->input('aluno');
 
             $query->whereHas('aluno', function($q) use ($aluno) {
-                $q->where('ALUNO', 'like', "{$aluno}%")
+                $q->where('ALUNO', 'like', "%{$aluno}%")
                 ->orWhere('NOME_COMPL', 'like', "%{$aluno}%");
             });
         }
