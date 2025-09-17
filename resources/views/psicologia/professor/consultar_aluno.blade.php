@@ -136,7 +136,7 @@
                 aluno.pacientes
                     .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
                     .forEach(paciente => {
-                        pacientesHtml += `<li class="list-group-item"><strong>${escapeHtml(paciente.nome)}</strong> (CPF: ${escapeHtml(paciente.cpf)})</li>`;
+                        pacientesHtml += `<li class="list-group-item"><strong class="me-3">Paciente:</strong>${escapeHtml(paciente.nome)} (CPF: ${escapeHtml(paciente.cpf)})</li>`;
                     });
                 pacientesHtml += '</ul>';
 
@@ -148,7 +148,7 @@
                         <button class="accordion-button collapsed d-flex align-items-center" type="button"
                             aria-expanded="false"
                             aria-controls="${safeId}">
-                            <strong class="me-3">${escapeHtml(aluno.nome)}</strong>
+                            <strong class="me-3">Aluno:</strong>${escapeHtml(aluno.nome)}
                             <span class="badge bg-primary rounded-pill ms-auto">${aluno.pacientes.length} Paciente(s)</span>
                         </button>
                     </h2>
