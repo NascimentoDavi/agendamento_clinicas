@@ -137,9 +137,9 @@
             <x-page-title>
             </x-page-title>
 
-            <div class="col-12 shadow-lg shadow-dark pt-3 bg-body-tertiary rounded">
+            <div class="col-12 shadow-lg shadow-dark pt-3 mt-3 mt-sm-0 bg-body-tertiary rounded">
                 <!-- CALENDÁRIO -->
-                <div id="calendar" style="max-width: 100%;" class="bg-light-subtle pe-4"></div>
+                <div id="calendar" style="max-width: 100%;" class="bg-light-subtle"></div>
             </div>
 
         </div>
@@ -310,16 +310,5 @@
     // Pega os dados do usuário da sessão
     $usuario = session('usuario');
 @endphp
-
-<!-- <script>
-    // // Converte para objeto JS
-    // const usuario = @json($usuario->map(function($u) {
-    //     return [
-    //         'id_usuario_clinica' => $u->ID_USUARIO_CLINICA,
-    //         'id_clinica' => $u->ID_CLINICA,
-    //         'sit_usuario' => $u->SIT_USUARIO
-    //     ];
-    // }));
-</script> -->
 
 </html>

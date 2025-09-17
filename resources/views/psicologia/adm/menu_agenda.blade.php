@@ -152,9 +152,9 @@
                     </p>
             </x-page-title>
 
-            <div class="col-12 shadow-lg shadow-dark pt-3 bg-body-tertiary rounded">
+            <div class="col-12 shadow-lg shadow-dark pt-3 mt-3 mt-sm-0 bg-body-tertiary rounded">
                 <!-- CALENDÁRIO -->
-                <div id="calendar" style="max-width: 100%;" class="bg-light-subtle pe-4"></div>
+                <div id="calendar" style="max-width: 100%;" class="bg-light-subtle"></div>
             </div>
         </div>
     </div>

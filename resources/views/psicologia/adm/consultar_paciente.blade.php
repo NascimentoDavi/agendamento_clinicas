@@ -62,22 +62,24 @@
 
             .table-cards tr {
                 margin-bottom: 1rem;
-                border: 1px solid rgba(0,0,0,0.125);
-                border-radius: 0.375rem;
+                border: 3px solid #131313ff; /* cor da borda do card */
+                border-radius: 0.5rem;  /* cantos arredondados */
+                margin-top: 20px;
+                box-shadow: 0 10px 4px rgba(0, 0, 0, 0.08); /* sombra leve para efeito card */
+                background-color: #fff; /* fundo branco */
             }
 
             .table-cards td {
-                text-align: right;
-                padding-left: 50%;
+                text-align: right; 
+                padding-left: 50%; 
                 position: relative;
                 border: none;
-                padding-top: 0.75rem;
-                padding-bottom: 0.75rem;
-                overflow-wrap: break-word;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
             }
-            
+
             .table-cards td:not(:last-child) {
-                 border-bottom: 1px solid #dee2e6;
+                border-bottom: 1px solid #eee;
             }
 
             .table-cards td::before {
@@ -89,14 +91,6 @@
                 font-weight: bold;
                 text-align: left;
             }
-            
-            .table-cards .actions-cell {
-                padding-left: 1rem;
-                text-align: center;
-            }
-            .table-cards .actions-cell .d-flex {
-                justify-content: center;
-             }
         }
     </style>
 </head>
@@ -566,9 +560,9 @@
                             // DEPENDENDO DO STATUS DO PACIENTE, MOSTRA UM BOTÃO
                             const btnStatus = isInativo 
                             
-                                ? `<button type="button" class="btn btn-sm btn-success ativar-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"><i class="bi bi-check2"></i> <span class="d-none d-sm-inline">Reativar</span></button>`
+                                ? `<button type="button" class="btn btn-sm btn-success ativar-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"><i class="bi bi-check2"></i></button>`
 
-                                : `<button type="button" class="btn btn-sm btn-danger excluir-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"><i class="bi bi-trash"></i> <span class="d-none d-sm-inline">Inativar</span></button>`;
+                                : `<button type="button" class="btn btn-sm btn-danger excluir-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE ?? 'Paciente'}"><i class="bi bi-trash"></i></button>`;
                                 
                             // CONTEÚDO DAS LINHAS DA TABELA
                             row.innerHTML = `
@@ -608,11 +602,11 @@
                                             data-cpf-responsavel="${paciente.CPF_RESPONSAVEL ?? ''}"
                                         >
 
-                                            <i class="bi bi-pencil"></i> <span class="d-none d-sm-inline">Editar</span>
+                                            <i class="bi bi-pencil"></i>
 
                                         </button>
                                         <button type="button" class="btn btn-sm btn-secondary historico-btn" data-id="${paciente.ID_PACIENTE}" data-nome="${paciente.NOME_COMPL_PACIENTE}">
-                                            <i class="bi bi-clock-history"></i> <span class="d-none d-sm-inline">Histórico</span>
+                                            <i class="bi bi-clock-history"></i>
                                         </button>
                                         ${btnStatus}
                                     </div>
@@ -689,7 +683,6 @@
                     const idade = calcularIdade(dataNasc);
                     if (idade < 18) {
                         if (!responsavelNome.value.trim() || !responsavelCPF.value.trim()) {
-                            // 🚨 impede envio e mantém o modal aberto
                             alert("Paciente menor de idade: é obrigatório informar Nome e CPF do responsável.");
                             return;
                         }

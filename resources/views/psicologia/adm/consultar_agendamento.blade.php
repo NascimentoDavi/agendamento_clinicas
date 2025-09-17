@@ -66,8 +66,11 @@
 
             .table-cards tr {
                 margin-bottom: 1rem;
-                border: 1px solid rgba(0,0,0,0.125);
-                border-radius: 0.375rem;
+                border: 3px solid #131313ff; /* cor da borda do card */
+                border-radius: 0.5rem;  /* cantos arredondados */
+                margin-top: 20px;
+                box-shadow: 0 10px 4px rgba(0, 0, 0, 0.08); /* sombra leve para efeito card */
+                background-color: #fff; /* fundo branco */
             }
 
             .table-cards td {
@@ -75,12 +78,12 @@
                 padding-left: 50%; 
                 position: relative;
                 border: none;
-                padding-top: 0.75rem;
-                padding-bottom: 0.75rem;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
             }
-            
+
             .table-cards td:not(:last-child) {
-                 border-bottom: 1px solid #dee2e6;
+                border-bottom: 1px solid #eee;
             }
 
             .table-cards td::before {
@@ -193,7 +196,7 @@
                         </div>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex gap-2">
                              <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-search"></i> Pesquisar
+                                Pesquisar
                             </button>
                             <button type="button" class="btn btn-outline-secondary" id="btnClearFilters" title="Limpar Filtros">
                                 Limpar
@@ -205,8 +208,8 @@
                 <hr>
 
                 <div class="w-100">
-                    <h5 class="mb-3">Resultados</h5>
-                    <div class="border rounded" style="max-height: 65vh; overflow-y: auto;">
+                    <h5 class="mb-3 text-center">Resultados</h5>
+                    <div id="tabela" class="border rounded table-responsive" style="max-height: 65vh; overflow-y: auto;">
                         <table class="table table-hover table-bordered align-middle mb-0 table-cards">
                             <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
                                 <tr>

@@ -2,9 +2,11 @@
 <div class="col-12 text-center mb-1 d-none d-md-block">
     <div class="d-flex flex-row justify-content-between align-items-center">
         <p class="p-0 mt-2 mb-1 text-start" style="font-size: 25px;">
-            <i class="bi bi-list" id="btnToggleNavbar" style="cursor: pointer;"></i>
+            <!-- Esconde em xs, sm e md; mostra a partir de lg -->
+            <i class="bi bi-list d-none d-lg-inline" id="btnToggleNavbar" style="cursor: pointer;"></i>
             <strong id='page-title'></strong>
         </p>
+
 		<div class="me-2 pt-2">
             {{ $slot }}
             <div class="profile-container" style="position: relative;">
