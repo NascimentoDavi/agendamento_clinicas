@@ -278,7 +278,8 @@
             maxDate: "today",
             locale: "pt",
             allowInput: true,
-            defaultDate: "{{ old('DT_NASC_PACIENTE') ?? '' }}"
+            defaultDate: "{{ old('DT_NASC_PACIENTE') ?? '' }}",
+            onChange: validarResponsavel
         });
 
         // Remoção de Alertas
@@ -325,10 +326,8 @@
         applyMask('cpf_paciente', cpfMask);
         applyMask('cpf_responsavel', cpfMask);
         applyMask('telefone', phoneMask);
-    </script>
 
     <!-- SCRIPT PARA OBRIGATORIEDADE DE PREENCHIMENTO DOS CAMPOS DE RESPONSÁVEL -->
-     <script>
         // Função para calcular idade
         function calcularIdade(dataNascimento) {
             const hoje = new Date();
@@ -348,6 +347,7 @@
             const nomeResp = document.getElementById('nome_responsavel');
             const cpfResp = document.getElementById('cpf_responsavel');
 
+            console.log(calcularIdade(dtNasc));
             if (dtNasc) {
                 const idade = calcularIdade(dtNasc);
 
@@ -355,7 +355,7 @@
                     nomeResp.setAttribute('required', 'true');
                     cpfResp.setAttribute('required', 'true');
 
-                    nomeResp.previousElementSibling.innerHTML = 'Nome Completo do Responsável <span class="required-field">*</span>';
+                    nomeResp.previousElementSibling.innerHTML = 'Nome Completo <span class="required-field">*</span>';
                     cpfResp.previousElementSibling.innerHTML = 'CPF do Responsável <span class="required-field">*</span>';
                 } else {
                     nomeResp.removeAttribute('required');
@@ -366,10 +366,6 @@
                 }
             }
         }
-
-        // Ativar validação sempre que a data de nascimento mudar
-        document.getElementById('dt_nasc').addEventListener('change', validarResponsavel);
-
         // Rodar validação inicial (ex: quando carrega página com old input)
         window.addEventListener('DOMContentLoaded', validarResponsavel);
     </script>
