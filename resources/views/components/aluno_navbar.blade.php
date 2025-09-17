@@ -136,7 +136,7 @@
 
 <nav class="navbar navbar-dark bg-primary d-lg-none fixed-top shadow-sm px-3" style="height: 56px">
     <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
-        <i class="fas fa-bars"></i>
+        <i class="bi bi-list"></i>
     </button>
     <img src="{{ asset('img/faesa_logo_expandido.png') }}" alt="Logo FAESA" class="mx-auto d-block" style="width: 100px;" >
 </nav>
@@ -175,28 +175,28 @@
         <!-- PÁGINA INICIAL - MENU AGENDA -->
         <li class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/aluno" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-home"></i> Início
+                <i class="bi bi-house"></i> Início
             </a>
         </li>
 
         <!-- INCLUIR AGENDAMENTO -->
         <li class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/aluno/criar-agendamento" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-calendar-plus"></i> Criar Agenda
+                <i class="bi bi-calendar-plus"></i> Criar Agenda
             </a>
         </li>
 
         <!-- CONSULTAR AGENDA -->
         <li class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/aluno/consultar-agendamento" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-edit"></i> Agendas
+                <i class="bi bi-pencil-square"></i> Agendas
             </a>
         </li>
 
         <!-- LOGOUT -->
         <li class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
             <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-sign-out-alt"></i>
+                <i class="bi bi-box-arrow-right"></i>
                 Logout
             </a>
         </li>

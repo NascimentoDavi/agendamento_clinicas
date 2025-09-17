@@ -29,8 +29,9 @@ class AlunoController extends Controller
         // Filtro de busca
         if ($search) {
             $query->where(function($q) use ($search) {
-                $q->where('a.NOME_COMPL', 'like', "{$search}%")
-                ->orWhere('a.ALUNO', 'like', "{$search}%");
+                $q->where('a.NOME_COMPL', 'like', "%{$search}%")
+                ->orWhere('a.ALUNO', 'like', "%{$search}%");
+                
             });
         }
 
