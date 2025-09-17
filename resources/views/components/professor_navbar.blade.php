@@ -173,28 +173,28 @@
         <!-- PÁGINA INICIAL - MENU AGENDA -->
         <li class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/professor" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-home"></i> Início
+                <i class="bi bi-house"></i> Início
             </a>
         </li>
 
         <!-- CONSULTAR AGENDA -->
         <li class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/professor/consultar-agendamento" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-edit"></i> Agendas
+                <i class="bi bi-pencil-square"></i> Agendas
             </a>
         </li>
 
         <!-- CONSULTAR alunoS E PACIENTES DOS alunoS -->
         <li class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/professor/aluno" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-people-fill"></i> Alunos
+                <i class="bi bi-people"></i> Alunos
             </a>
         </li>
 
         <!-- LOGOUT -->
         <li class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
             <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-1">
-                <i class="fas fa-sign-out-alt"></i>
+                <i class="bi bi-box-arrow-right"></i>
                 Logout
             </a>
         </li>
