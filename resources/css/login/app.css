@@ -21,6 +21,7 @@ body {
 .container img {
     display: block;
     margin: 0 auto;
+    margin-top: 25px;
     width: 160px;
     margin-bottom: 50px;
 }

@@ -12,12 +12,12 @@
 
 @section('content')
 
-    <div class="container mw-100">
+    <div class="mt-2 mw-100 container">
         
         <div class="row">
             
             <x-page-title>
-                <span id="button-novo-agendamento-header" onclick="window.location.href = '/aluno/criar-agendamento'" class="btn btn-success">
+                <span id="button-novo-agendamento-header" onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success">
                     <span>Novo Agendamento</span>
                 </span>
             </x-page-title>

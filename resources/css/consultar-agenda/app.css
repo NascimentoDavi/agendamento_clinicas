@@ -1,0 +1,172 @@
+/* ========================== */
+/* RESET E BOX-SIZING         */
+/* ========================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ========================== */
+/* CONTAINER DA TABELA        */
+/* ========================== */
+#tabela {
+    display: block;
+    max-height: 50vh;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+#consulta-container {
+    max-width: 100%;
+}
+
+/* ========================== */
+/* ESTILO DA TABELA           */
+/* ========================== */
+.table-cards {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    min-width: 1000px;
+}
+
+/* CELULAS */
+.table-cards th,
+.table-cards td {
+    white-space: nowrap !important;
+    word-break: break-word;
+    overflow: hidden;
+    vertical-align: middle;
+    min-width: 0;
+    width: 70px;
+    text-overflow: ellipsis;
+    padding: 0.65rem 0.75rem;
+}
+
+/* CABEÇALHO */
+.table-cards thead th {
+    background-color: #e9ecef;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* LINHAS */
+.table-cards tbody tr {
+    background-color: #ffffff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.table-cards tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    background-color: #f8f9fa;
+}
+
+/* BADGES DE STATUS */
+.table-cards td .badge {
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.35em 0.6em;
+}
+
+/* ========================== */
+/* FORMULÁRIO DE FILTROS      */
+/* ========================== */
+#search-form .row > [class*="col-"] {
+    min-width: 0;
+}
+#search-form .input-group,
+#search-form .form-control,
+#search-form .form-select,
+#search-form .btn {
+    min-width: 0;
+}
+
+/* ========================== */
+/* AÇÕES DA TABELA            */
+/* ========================== */
+.agendamento-actions {
+    min-width: 1px;
+    white-space: nowrap;
+}
+
+.agendamento-actions .btn {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    border-radius: 0.35rem;
+}
+
+.agendamento-actions .btn:hover {
+    filter: brightness(85%);
+    transition: filter 0.2s ease-in-out;
+}
+
+/* SOMBRA EXTRA */
+.shadow-dark {
+    box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
+}
+
+/* ========================== */
+/* ALERTAS ANIMADAS           */
+/* ========================== */
+@keyframes slideDownFadeOut {
+    0%   { transform: translate(-50%, -100%); opacity: 0; }
+    10%  { transform: translate(-50%, 0); opacity: 1; }
+    90%  { transform: translate(-50%, 0); opacity: 1; }
+    100% { transform: translate(-50%, -100%); opacity: 0; }
+}
+.animate-alert {
+    animation: slideDownFadeOut 5s ease forwards;
+    z-index: 1050;
+}
+
+/* ========================== */
+/* RESPONSIVO / MOBILE CARDS  */
+/* ========================== */
+@media (max-width: 992px) {
+    .table-cards thead {
+        display: none;
+    }
+
+    .table-cards tbody, .table-cards tr, .table-cards td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-cards tr {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+        background-color: #fff;
+    }
+
+    .table-cards td {
+        text-align: right;
+        padding-left: 35%;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        position: relative;
+        border: none;
+        white-space: normal;
+    }
+
+    .table-cards td:not(:last-child) {
+        border-bottom: 1px solid #eee;
+    }
+
+    .table-cards td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1rem;
+        font-weight: 600;
+        color: #495057;
+        text-align: left;
+    }
+}

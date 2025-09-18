@@ -17,28 +17,35 @@
     }
 
     :root {
-        --blue-color: #2596be;
-        --secondary-color: #7aacce;
+        --blue-color: #0094CF;
+        --secondary-color: #A0D6E9;
         --third-color: #fc7c34;
         --light-color: #ecf5f9;
+        --black-color: #161F28;
     }
 
     .link-agendar {
-        background-color: var(--secondary-color);
+        background: linear-gradient(135deg, var(--blue-color), var(--secondary-color));
         color: white;
         text-decoration: none;
         transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        border-color: black;
+        border-width: 10px;
     }
 
     .link-agendar:hover {
-        background-color: var(--blue-color);
         color: white;
         transform: translateX(4px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
+    .link-agendar span {
+        color: white;
+    }
+
     .link-agendar i {
+        color:white;
         transition: transform 0.3s ease;
     }
 
@@ -81,6 +88,17 @@
         }
     }
 
+    #main-container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    #content {
+        flex: 1;
+        overflow-x: auto;
+        padding: 1rem;
+    }
+
     /* Esconde o submenu por padrão */
     .collapse-custom {
     display: none;
@@ -94,9 +112,9 @@
     
     /* --- ESTILOS DA NAVBAR E TRANSIÇÃO --- */
     #mainNavbar {
+        background-color: var(--blue-color);
         min-width: 250px;
         width: 250px;
-        background-color: var(--blue-color);
         transition: width 0.3s ease;
         overflow-x: hidden; /* Previne conteúdo de vazar durante a transição */
     }
@@ -134,6 +152,38 @@
     #logo-faesa {
         transition: opacity 0.3s ease-in-out;
     }
+
+    li {
+        border: 2px black;
+    }
+
+    i {
+        color: var(--black-color);
+    }
+
+    li a span {
+        color: var(--black-color);
+    }
+
+    #list-item{
+        border: 1px;
+        border-style: solid;
+        border-color: var(--black-color);
+        border-radius: 50%;
+    }
+
+    #content {
+    flex: 1;
+    overflow-x: auto;
+    padding: 1rem;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    margin-left: 250px; /* largura padrão da sidebar */
+}
+
+/* Quando a navbar estiver collapsed */
+#mainNavbar.collapsed + #content {
+    margin-left: 80px; /* largura reduzida */
+}
 </style>
 
 <nav class="navbar navbar-dark bg-primary d-lg-none fixed-top shadow-sm px-3" style="height: 56px">
@@ -147,14 +197,14 @@
 <div id="main-container" class="d-flex min-vh-100">
 
 <!-- SIDEBAR DESKTOP -->
-<nav class="p-3 d-none d-lg-flex flex-column align-items-center shadow-lg" id="mainNavbar">
+<nav class="bg-primary p-3 d-none d-lg-flex flex-column align-items-center shadow-lg" id="mainNavbar">
     <!-- LOGO DA FAESA - NAVBAR -->
     <img src="{{ asset('img/faesa_logo_expandido.png') }}" alt="Logo" class="img-fluid mb-2" id="logo-faesa" width="150px" />
 
     <!-- TITULO SIDEBAR -->
     <h5 class="mb-2 mt-3 p-2 rounded-3 text-center"
         style="color: white; font-size: 18px;">
-        <strong>Clínica de Psicologia</strong>
+        Clínica de Psicologia
         <p class="p-0 m-0 text-center" style="font-size: 12px;"><em>Administrador</em></p>
     </h5>
 
@@ -169,82 +219,91 @@
         <!-- LINKS -->
 
         <!-- PÁGINA INICIAL - MENU AGENDA -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-house"></i> Início
+                <i class="bi bi-house"></i>
+                <span class="strong">Início</span>
             </a>
         </li>
 
 
         <!-- INCLUIR AGENDAMENTO -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/criar-agendamento" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-calendar-plus"></i> Criar Agenda
+                <i class="bi bi-calendar-plus"></i>
+                <span class="strong">Criar Agenda</span>
             </a>
         </li>
 
 
         <!-- CONSULTAR AGENDA -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/consultar-agendamento" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-pencil-square"></i> Agendas
+                <i class="bi bi-pencil-square"></i>
+                <span class="strong">Agendas</span>
             </a>
         </li>
 
 
         <!-- CADASTRAR PACIENTE -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/criar-paciente" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-person-add"></i> Criar Paciente
+                <i class="bi bi-person-add"></i>
+                <span class="strong">Criar Paciente</span>
             </a>
         </li>
 
         
         <!-- CONSULTAR PACIENTE -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/consultar-paciente" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-people"></i> Pacientes
+                <i class="bi bi-people"></i>
+                <span class="strong">Pacientes</span>
             </a>
         </li>
 
 
         <!-- CADASTRAR SERVIÇO -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/criar-servico" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-gear"></i> Serviços
+                <i class="bi bi-gear"></i>
+                <span class="strong">Serviços</span>
             </a>
         </li>
 
 
         <!-- CADASTRAR SALA -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/criar-sala" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-door-open"></i> Salas
+                <i class="bi bi-door-open"></i>
+                <span class="strong">Salas</span>
             </a>
         </li>
 
 
         <!-- HORÁRIOS -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/criar-horario" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-alarm"></i> Horários
+                <i class="bi bi-alarm"></i>
+                <span class="strong">Horários</span>
             </a>
         </li>
 
 
         <!-- RELATÓRIO -->
-        <li class="list-group-item rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item rounded-1 p-0 overflow-hidden ">
             <a href="/psicologia/relatorios-agendamento" class="link-agendar d-flex align-items-center gap-2 p-1">
-                <i class="bi bi-bar-chart"></i> Relatório
+                <i class="bi bi-bar-chart"></i>
+                <span class="strong">Relatórios</span>
             </a>
         </li>
 
 
         <!-- LOGOUT -->
-        <li class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
+        <li id="list-item" class="list-group-item mt-auto rounded-1 p-0 overflow-hidden ">
             <a href="/logout" class="link-logout d-flex align-items-center gap-2 p-1">
                 <i class="bi bi-box-arrow-right"></i>
-                Logout
+                <span class="strong"><strong>Sair</strong></span>
             </a>
         </li>
 

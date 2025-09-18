@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>@yield('title', 'Agendamentos Clínica')</title>
+    <title>@yield('title', 'Agendamentos Clínica') - Clínica Psicologia FAESA</title>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- FAVICON -->
     <link rel="icon" type="image/png" href="/favicon_faesa.png">
@@ -20,7 +22,7 @@
 
     @include('components.navbar')
 
-    <main class="container">
+    <main class="mx-3">
         @yield('content')
     </main>
 

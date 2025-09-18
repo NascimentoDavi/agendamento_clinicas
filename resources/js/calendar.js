@@ -75,94 +75,35 @@ function getCalendarOptions(screenWidth) {
 
 function renderCalendar() {
     const calendarEl = document.getElementById("calendar");
-    if(!calendarEl) return;
+    if (!calendarEl) return;
 
-    if(calendar) calendar.destroy();
+    if (calendar) calendar.destroy();
 
     const screenWidth = window.innerWidth;
-    const options = getCalendarOptions(screenWidth);
-    calendar = new Calendar(calendarEl, options);
+    calendar = new Calendar(calendarEl, getCalendarOptions(screenWidth));
     calendar.render();
 }
 
-// Inicializa calendário
+// Inicializa calendário e listeners
 document.addEventListener('DOMContentLoaded', () => {
     renderCalendar();
 
-    // Listener para alterar status
-    document.getElementById('btnSalvarStatus').addEventListener('click', function() {
-        const eventId = this.getAttribute('data-event-id');
-        const novoStatus = document.getElementById('modalStatusSelect').value;
-        const checkPagamento = document.getElementById('modalCheckPagamento').checked ? 'S' : 'N';
-        const valorPagamento = document.getElementById('modalValorPagamento').value;
-
-        if(novoStatus === "Cancelado") {
-            bootstrap.Modal.getInstance(document.getElementById('agendamentoModal')).hide();
-            new bootstrap.Modal(document.getElementById('motivoCancelamentoModal')).show();
-        } else {
-            fetch(`/psicologia/agendamentos/${eventId}/status`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ status: novoStatus, checkPagamento, valorPagamento })
-            })
-            .then(resp => { if(!resp.ok) throw new Error('Erro ao atualizar status.'); return resp.json(); })
-            .then(() => {
-                calendar.refetchEvents();
-                bootstrap.Modal.getInstance(document.getElementById('agendamentoModal')).hide();
-            })
-            .catch(err => alert(err.message));
-        }
+    // Ajusta calendário no resize da janela
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (calendar) calendar.updateSize();
+        }, 200);
     });
 
-    // Listener para motivo de cancelamento
-    document.getElementById("btnMensagemCancelamento").addEventListener('click', function() {
-        const content = document.getElementById('text-cancelamento').value;
-        const eventId = this.getAttribute('data-event-id');
-        const checkPagamento = document.getElementById('modalCheckPagamento').checked ? 'S' : 'N';
-        const valorPagamento = document.getElementById('modalValorPagamento').value;
-
-        if(!content) return alert("Insira um motivo para poder continuar");
-
-        fetch(`/psicologia/agendamentos/${eventId}/mensagem-cancelamento`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ mensagem: content, id: eventId, checkPagamento, valorPagamento })
-        })
-        .then(resp => { if(!resp.ok) throw new Error('Erro ao atualizar agendamento.'); return resp.json(); })
-        .then(() => {
-            document.getElementById('text-cancelamento').value = '';
-            calendar.refetchEvents();
-            bootstrap.Modal.getInstance(document.getElementById('motivoCancelamentoModal')).hide();
-        })
-        .catch(err => alert(err.message));
-    });
-
-    // Listener para mostrar/ocultar input de valor pago
-    const valorSection = document.getElementById('valorPagoAgendamento');
-    const checkSection = document.getElementById('modalCheckPagamento');
-    checkSection.addEventListener('change', function() {
-        if(this.checked) valorSection.classList.remove('d-none');
-        else valorSection.classList.add('d-none');
-    });
-});
-
-// Debounce de resize sensível a breakpoint
-let resizeTimeout;
-let currentScreenWidth = window.innerWidth;
-
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        const newWidth = window.innerWidth;
-        if((currentScreenWidth <= 600 && newWidth > 600) || (currentScreenWidth > 600 && newWidth <= 600)) {
-            currentScreenWidth = newWidth;
-            renderCalendar();
-        }
-    }, 300);
+    // Ajusta calendário quando a sidebar termina a transição
+    const sidebar = document.getElementById('mainNavbar');
+    if (sidebar) {
+        sidebar.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'width') {
+                if (calendar) calendar.updateSize();
+            }
+        });
+    }
 });
