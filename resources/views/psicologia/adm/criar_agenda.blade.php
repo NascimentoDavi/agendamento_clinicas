@@ -8,54 +8,14 @@
     <link rel="icon" type="image/png" href="/favicon_faesa.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.1.0/mdb.min.css" rel="stylesheet" />
+    <!-- BOOTSTRAP CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- BOOTSTRAP ICONS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- FLATPICKR -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-
+    <!-- TOM SELECT -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.css" rel="stylesheet">
-
-    <style>
-        /* Estilos mantidos do arquivo original e adaptados */
-        #servicos-list button {
-            cursor: pointer;
-        }
-
-        #recorrenciaCampos.show {
-            display: flex !important;
-            animation: fadeInSlide 0.3s ease-in-out;
-        }
-
-        @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        #alert-success, #alert-error {
-            max-width: 90%;
-        }
-
-        @keyframes slideDownFadeOut {
-            0% { transform: translate(-50%, -100%); opacity: 0; }
-            10% { transform: translate(-50%, 0); opacity: 1; }
-            90% { transform: translate(-50%, 0); opacity: 1; }
-            100% { transform: translate(-50%, -100%); opacity: 0; }
-        }
-
-        #info-observacao:hover {
-            color: #0a58ca;
-        }
-
-        /* Estilos para limitar a altura das listas de busca */
-        .list-local-option, .list-aluno-option, #pacientes-list .list-group {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .shadow-dark {
-            box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
-        }
-    </style>
-    
 </head>
 
 <body class="bg-body-secondary">
