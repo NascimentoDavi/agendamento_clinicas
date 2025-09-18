@@ -1,4 +1,4 @@
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+@vite(['resources/css/page-title-header/app.css', 'resources/js/app.js'])
 
 <div class="col-12 text-center mb-1 d-none d-md-block">
     
