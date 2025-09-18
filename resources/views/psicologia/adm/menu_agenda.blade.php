@@ -5,157 +5,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Calendário - Agendamentos Clínica - Administrador</title>
-
     <!-- FAVICON - IMAGEM DA GUIA -->
     <link rel="icon" type="image/png" href="/favicon_faesa.png">
-
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.1.0/mdb.min.css" rel="stylesheet" />
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {{-- Bootsrap Icons --}}
+    <!-- VITE -->
+    @vite(['resources/css/page-title-header/app.css'])
+    @vite(['resources/css/menu-calendar/app.css'])
+    <!-- BOOTSTRAP ICONS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    {{-- Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    
-    {{-- Bootstrap JS --}}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">    
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous">
     </script>
-
-    <style>
-        #calendar {
-            width: 100%;
-            height: 100vh; /* ocupa toda altura da tela */
-            max-width: 900px;
-            max-height: 86vh;
-            overflow-y: auto;
-            margin: auto;
-            margin-right: 10px; 
-        }
-
-        #calendar::-webkit-scrollbar {
-            width: 6px;
-        }
-        #calendar::-webkit-scrollbar-track {
-            background: #ecf5f9;
-            border-radius: 8px;
-        }
-        #calendar::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #2596be, #7aacce);
-        border-radius: 8px;
-        }
-        #calendar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #7aacce, #2596be);
-        }
-
-        /* Limita altura de eventos apenas na view Mês */
-        .fc-dayGridMonth-view .fc-daygrid-day-events {
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        /* Na view Dia, os eventos ocupam todo o espaço disponível */
-        .fc-dayGridDay-view .fc-daygrid-day-events,
-        .fc-timeGridDay-view .fc-timegrid-event {
-            max-height: none;
-            height: auto !important;
-        }
-
-
-        /* Esconde o scroll normalmente */
-        .fc-daygrid-day-events {
-            overflow-x: hidden;
-            padding-right: 4px;
-            scrollbar-width: none;
-        }
-
-        /* Ativa o scroll quando passar o mouse */
-            .fc-daygrid-day-events:hover {
-            scrollbar-width: thin;
-            scrollbar-color: #2596be #ecf5f9;
-        }
-
-        /* Chrome, Edge e Safari */
-        .fc-daygrid-day-events::-webkit-scrollbar {
-            width: 0px; /* escondido */
-        }
-
-        /* Quando passar o mouse, mostra a barrinha */
-        .fc-daygrid-day-events:hover::-webkit-scrollbar {
-            width: 2px; /* largura visível */
-        }
-
-        .fc-daygrid-day-events:hover::-webkit-scrollbar-track {
-            background: #ecf5f9;
-            border-radius: 10px;
-        }
-
-        .fc-daygrid-day-events:hover::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #2596be, #7aacce);
-            border-radius: 56px;
-            border: 2px solid #ecf5f9;
-        }
-
-        .fc-daygrid-day-events:hover::-webkit-scrollbar-thumb:hover {
-         background: linear-gradient(180deg, #2596be, #2596be);
-        }
-
-        .shadow-dark {
-            box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
-        }
-
-        /* Navbar normal */
-        #mainNavbar {
-            width: 240px;
-            transition: width 0.3s ease;
-            overflow: hidden;
-        }
-
-        /* Navbar encolhida */
-        #mainNavbar.collapsed {
-            width: 70px;
-        }
-
-        #mainNavbar.collapsed .nav-link span {
-            display: none; /* esconde só os textos, mantém ícones */
-        }
-        #mainNavbar {
-        width: 250px;
-        background-color: var(--blue-color);
-        transition: width 0.3s ease;
-        overflow: hidden;
-        }
-
-        #mainNavbar.collapsed {
-        width: 70px;
-        }
-
-    </style>
-
 </head >
-    
+
 <body class="bg-body-secondary">
     
     @include('components.navbar')
 
     <div class="container ms-3 me-3 mw-100">
+
         <div class="row">
-
+            
             <x-page-title>
-                    <p onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success p-2 me-3" style="font-size: 15px;" >
-                        <span>Novo Agendamento</span>
-                    </p>
-            </x-page-title>
 
-            <div class="col-12 shadow-lg shadow-dark pt-3 mt-3 mt-sm-0 bg-body-tertiary rounded">
+                <span id="button-novo-agendamento-header" onclick="window.location.href = '/aluno/criar-agendamento'" class="btn btn-success">
+                    <span>Novo Agendamento</span>
+                </span>
+                
+            </x-page-title>
+                
+            <div class="col-12 shadow-lg shadow-dark pt-3 me-3 me-sm-0 bg-body-tertiary rounded mt-3 mt-md-0">
+
                 <!-- CALENDÁRIO -->
-                <div id="calendar" style="max-width: 100%;" class="bg-light-subtle"></div>
+                <div id="calendar" class="bg-light-subtle"></div>
+                
             </div>
+
         </div>
     </div>
 
@@ -341,12 +233,10 @@
     function renderCalendar() {
         const calendarEl = document.getElementById("calendar");
 
-        // Destroi o calendário anterior, se já existir
         if (calendar) {
             calendar.destroy();
         }
 
-        // Cria nova instância com base na largura atual
         const screenWidth = window.innerWidth;
         const options = getCalendarOptions(screenWidth);
 

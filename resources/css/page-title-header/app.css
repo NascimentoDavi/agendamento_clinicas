@@ -1,0 +1,10 @@
+/* ---------------------------------- */
+/* PAGE TITLE - HEADER DO MENU_AGENDA */
+/* ---------------------------------- */
+
+/* Button de novo agendamento */
+#button-novo-agendamento-header {
+    font-size: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
+}

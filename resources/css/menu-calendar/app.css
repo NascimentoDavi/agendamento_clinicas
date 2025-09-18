@@ -1,0 +1,105 @@
+#calendar {
+    width: 100%;
+    height: 87vh;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: auto;
+}
+
+#calendar::-webkit-scrollbar {
+    width: 6px;
+}
+#calendar::-webkit-scrollbar-track {
+    background: #ecf5f9;
+    border-radius: 8px;
+}
+#calendar::-webkit-scrollbar-thumb {
+background: linear-gradient(180deg, #2596be, #7aacce);
+border-radius: 8px;
+}
+#calendar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7aacce, #2596be);
+}
+
+/* Limita altura de eventos apenas na view Mês */
+.fc-dayGridMonth-view .fc-daygrid-day-events {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+/* Na view Dia, os eventos ocupam todo o espaço disponível */
+.fc-dayGridDay-view .fc-daygrid-day-events,
+.fc-timeGridDay-view .fc-timegrid-event {
+    max-height: none;
+    height: auto !important;
+}
+
+
+/* Esconde o scroll normalmente */
+.fc-daygrid-day-events {
+    overflow-x: hidden;
+    padding-right: 4px;
+    scrollbar-width: none;
+}
+
+/* Ativa o scroll quando passar o mouse */
+.fc-daygrid-day-events:hover {
+    scrollbar-width: thin;
+    scrollbar-color: #2596be #ecf5f9;
+}
+
+/* Chrome, Edge e Safari */
+.fc-daygrid-day-events::-webkit-scrollbar {
+    width: 0px; /* escondido */
+}
+
+/* Quando passar o mouse, mostra a barrinha */
+.fc-daygrid-day-events:hover::-webkit-scrollbar {
+    width: 2px; /* largura visível */
+}
+
+.fc-daygrid-day-events:hover::-webkit-scrollbar-track {
+    background: #ecf5f9;
+    border-radius: 10px;
+}
+
+.fc-daygrid-day-events:hover::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #2596be, #7aacce);
+    border-radius: 56px;
+    border: 2px solid #ecf5f9;
+}
+
+.fc-daygrid-day-events:hover::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2596be, #2596be);
+}
+
+.shadow-dark {
+    box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
+}
+
+/* Navbar normal */
+#mainNavbar {
+    width: 240px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+/* Navbar encolhida */
+#mainNavbar.collapsed {
+    width: 70px;
+}
+
+#mainNavbar.collapsed .nav-link span {
+    display: none;
+}
+#mainNavbar {
+    width: 250px;
+    background-color: var(--blue-color);
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+#mainNavbar.collapsed {
+    width: 70px;
+}

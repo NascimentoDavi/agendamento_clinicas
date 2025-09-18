@@ -1,18 +1,29 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 <div class="col-12 text-center mb-1 d-none d-md-block">
+    
     <div class="d-flex flex-row justify-content-between align-items-center">
+        
         <p class="p-0 mt-2 mb-1 text-start" style="font-size: 25px;">
-            <!-- Esconde em xs, sm e md; mostra a partir de lg -->
+            
             <i class="bi bi-list d-none d-lg-inline" id="btnToggleNavbar" style="cursor: pointer;"></i>
+
             <strong id='page-title'></strong>
+            
         </p>
 
-		<div class="me-2 pt-2">
+		<div class="d-flex flex-row gap-2 justify-content-between align-items-center">
+
+            <!-- BUTTON ADICIONADO NA VIEW -->
             {{ $slot }}
+
+            <!-- ICONE DO PERFIL DO USUARIO -->
             <div class="profile-container" style="position: relative;">
                 <i class="bi bi-person-circle fs-2" id="profile" style="cursor: pointer;"></i> 
             </div>
+
         </div>        
+        
     </div>
 </div>
 
