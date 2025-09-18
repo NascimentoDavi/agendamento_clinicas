@@ -12,7 +12,7 @@
 
 @section('content')
 
-    <div class="mt-2 mw-100 container">
+    <div class="mw-100 container">
         
         <div class="row">
             

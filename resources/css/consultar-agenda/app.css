@@ -36,13 +36,8 @@
 .table-cards th,
 .table-cards td {
     white-space: nowrap !important;
-    word-break: break-word;
     overflow: hidden;
-    vertical-align: middle;
-    min-width: 0;
-    width: 70px;
     text-overflow: ellipsis;
-    padding: 0.65rem 0.75rem;
 }
 
 /* CABEÇALHO */

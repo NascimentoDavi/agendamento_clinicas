@@ -41,12 +41,12 @@
 
             <!-- HEADER -->
             <x-page-title>
-                <p onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success p-2 me-3" style="font-size: 15px;" >
+                <span id="button-novo-agendamento-header" onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success">
                     <span>Novo Agendamento</span>
-                </p>
+                </span>
             </x-page-title>
 
-            <div class="col-12 shadow-lg shadow-dark px-4 pt-4 bg-body-tertiary rounded">
+            <div class="col-12 shadow-lg shadow-dark px-4 pt-2 bg-body-tertiary rounded">
             
                 <!-- FORM DE FILTRO -->
                 <form id="search-form" class="w-100">
