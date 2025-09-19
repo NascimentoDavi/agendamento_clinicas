@@ -8,3 +8,21 @@
     padding-left: 5px;
     padding-right: 5px;
 }
+
+.page-title-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: var(--bs-body-bg);
+    margin-top: 1px;
+
+    /* borda inferior */
+    border-bottom: 1px solid #dee2e6; /* cor cinza suave do bootstrap */
+
+    /* arredondado só embaixo */
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+
+    /* sombra leve */
+    box-shadow: 0 2px 6px rgb(95, 94, 94);
+}

@@ -12,7 +12,7 @@
 
 @section('content')
 
-    <div class="mt-2 mw-100 container">
+    <div class="mw-100 container" id="content-container">
         
         <div class="row">
             
@@ -26,6 +26,7 @@
                 <!-- CALENDÁRIO -->
                 <div id="calendar" class="bg-light-subtle"></div>
             </div>
+            
         </div>
     </div>
 

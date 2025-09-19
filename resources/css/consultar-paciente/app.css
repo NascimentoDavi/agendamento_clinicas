@@ -1,0 +1,169 @@
+/* reset box sizing to avoid unexpected overflow calculations */
+*, *::before, *::after { box-sizing: border-box; }
+
+#search-form {
+    font-size: 0.67rem;
+}
+
+#search-form .form-control,
+#search-form .form-select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+#search-form .input-group-text,
+#search-form .btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+}
+
+#search-form .input-group {
+    flex-wrap: nowrap;
+}
+
+/* ========================== */
+/* CONTAINER DA TABELA        */
+/* ========================== */
+#tabela {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+#tabela-container {
+    font-size: 0.67rem;;
+}
+
+/* make table use a fixed layout so cells can shrink and wrap instead of forcing page overflow */
+.table-cards {
+    width: 100%;
+    table-layout: fixed; /* força colunas a dividir o espaço disponível */
+    border-collapse: collapse;
+    min-width: 0; /* importante para permitir encolhimento */
+}
+
+/* allow breaking long words / values inside cells */
+.table-cards th,
+.table-cards td {
+    white-space: normal !important;   /* permite quebra de linha */
+    word-break: break-word;           /* quebra palavras longas */
+    overflow-wrap: anywhere;          /* ajuda em strings sem espaços */
+    vertical-align: middle;
+    min-width: 0;                     /* evita que células imponham largura mínima */
+}
+
+/* evitar que os grupos de input do formulário forcem largura mínima */
+#search-form .row > [class*="col-"] {
+    min-width: 0; /* permite que colunas encolham */
+}
+#search-form .input-group,
+#search-form .form-control,
+#search-form .form-select,
+#search-form .btn {
+    min-width: 0;
+}
+.shadow-dark {
+    box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
+}
+#limit-container {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+#limitador-registros {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+@keyframes slideDownFadeOut {
+    0%   { transform: translate(-50%, -100%); opacity: 0; }
+    10%  { transform: translate(-50%, 0); opacity: 1; }
+    90%  { transform: translate(-50%, 0); opacity: 1; }
+    100% { transform: translate(-50%, -100%); opacity: 0; }
+}
+.animate-alert {
+    animation: slideDownFadeOut 5s ease forwards;
+    z-index: 1050;
+}
+.modal-xxl {
+    max-width: 90%;
+}
+.modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* LINHAS - HOVER */
+.table-cards tbody tr {
+    background-color: #ffffff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.table-cards tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    background-color: #f8f9fa;
+}
+
+/* BOTÕES DE AÇÃO */
+.agendamento-actions .btn {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    border-radius: 0.35rem;
+    transition: filter 0.2s ease-in-out;
+}
+
+.agendamento-actions .btn:hover {
+    filter: brightness(85%);
+}
+
+@media (max-width: 992px) {
+    .table-cards thead {
+        display: none;
+    }
+
+    .table-cards tbody, .table-cards tr, .table-cards td {
+        display: block;
+        width: 100%;
+    }
+
+    .table-cards tr {
+        margin-bottom: 1rem;
+        border: 3px solid #131313ff; /* cor da borda do card */
+        border-radius: 0.5rem;  /* cantos arredondados */
+        margin-top: 20px;
+        box-shadow: 0 10px 4px rgba(0, 0, 0, 0.08); /* sombra leve para efeito card */
+        background-color: #fff; /* fundo branco */
+    }
+
+    .table-cards td {
+        text-align: right; 
+        padding-left: 50%; 
+        position: relative;
+        border: none;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .table-cards td:not(:last-child) {
+        border-bottom: 1px solid #eee;
+    }
+
+    .table-cards td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1rem;
+        font-weight: bold;
+        text-align: left;
+    }
+}

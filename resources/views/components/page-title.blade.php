@@ -1,7 +1,7 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<div class="col-12 text-center mb-1 d-none d-md-block">
-    
+<div class="col-12 text-center mb-1 d-none d-md-block page-title-sticky">
+
     <div class="d-flex flex-row justify-content-between align-items-center">
         
         <p class="p-0 mt-2 mb-1 text-start" style="font-size: 25px;">

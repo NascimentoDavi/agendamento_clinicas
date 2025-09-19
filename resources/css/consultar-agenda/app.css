@@ -3,12 +3,31 @@
 /* ========================== */
 *, *::before, *::after { box-sizing: border-box; }
 
+#search-form {
+    font-size: 0.67rem;
+}
+
+#search-form .form-control,
+#search-form .form-select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+#search-form .input-group-text,
+#search-form .btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+}
+
+#search-form .input-group {
+    flex-wrap: nowrap;
+}
+
 /* ========================== */
 /* CONTAINER DA TABELA        */
 /* ========================== */
 #tabela {
     display: block;
-    max-height: 50vh;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: auto;
@@ -18,8 +37,8 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-#consulta-container {
-    max-width: 100%;
+#tabela-container {
+    font-size: 0.67rem;;
 }
 
 /* ========================== */
@@ -43,6 +62,34 @@
     width: 70px;
     text-overflow: ellipsis;
     padding: 0.65rem 0.75rem;
+}
+
+th[data-sort="paciente"] {
+    width: 100px;
+}
+
+th[data-sort="horaIni"] {
+    width: 55px;
+}
+
+th[data-sort="horaFim"] {
+    width: 55px;
+}
+
+th[data-sort="aluno"] {
+    width: 100px;
+}
+
+th[data-sort="valor"] {
+    width: 55px;
+}
+
+th[data-sort="valorPago"] {
+    width: 55px;
+}
+
+th[data-sort="reagendamento"] {
+    width: 50px;
 }
 
 /* CABEÇALHO */

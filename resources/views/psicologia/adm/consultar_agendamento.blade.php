@@ -9,9 +9,6 @@
     <!-- FONTES -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 
-    <!-- CSS Tablesaw -->
-    <link rel="stylesheet" href="https://unpkg.com/tablesaw@3.1.2/dist/tablesaw.css">
-
     @vite(['resources/css/page-title-header/app.css'])
     @vite(['resources/css/consultar-agenda/app.css'])
 @endsection
@@ -35,15 +32,15 @@
         </div>
     @endif
 
-    <div class="mx-3 mt-2 mw-100">
+    <div class="mx-3 mb-2 mw-100">
 
         <div class="row">
 
             <!-- HEADER -->
             <x-page-title>
-                <p onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success p-2 me-3" style="font-size: 15px;" >
+                <span id="button-novo-agendamento-header" onclick="window.location.href = '/psicologia/criar-agendamento'" class="btn btn-success">
                     <span>Novo Agendamento</span>
-                </p>
+                </span>
             </x-page-title>
 
             <div class="col-12 shadow-lg shadow-dark px-4 pt-4 bg-body-tertiary rounded">
@@ -129,56 +126,53 @@
                 <hr>
 
                 <!-- CONTAINER DA TABELA -->
-                    <!-- Tabela para telas grandes -->
-                    <div id="tabela" class="border rounded d-none d-lg-block">
-                        <table class="table table-hover table-bordered align-middle mb-0 table-cards" id="tabela-container">
-                            <thead>
-                                <tr>
-                                    <th data-sort="paciente">Paciente</th>
-                                    <th data-sort="aluno">Aluno</th>
-                                    <th data-sort="servico">Serviço</th>
-                                    <th data-sort="data">Data</th>
-                                    <th data-sort="horaIni">Início</th>
-                                    <th data-sort="horaFim">Fim</th>
-                                    <th data-sort="local">Local</th>
-                                    <th data-sort="status">Status</th>
-                                    <th data-sort="reagendamento">Reagendamento?</th>
-                                    <th data-sort="valor">Valor</th>
-                                    <th data-sort="pago">Pago?</th>
-                                    <th data-sort="valorPago">Valor Pago</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="agendamentos-tbody">
-                                <tr>
-                                    <td colspan="13" class="text-center">Nenhuma pesquisa realizada ainda.</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Tabela para telas grandes -->
+                <div id="tabela" class="border rounded d-none d-lg-block">
+                    <table class="table table-hover table-bordered align-middle table-cards" id="tabela-container">
+                        <thead>
+                            <tr>
+                                <th data-sort="paciente">Paciente</th>
+                                <th data-sort="aluno">Aluno</th>
+                                <th data-sort="servico">Serviço</th>
+                                <th data-sort="data">Data</th>
+                                <th data-sort="horaIni">Início</th>
+                                <th data-sort="horaFim">Fim</th>
+                                <th data-sort="local">Local</th>
+                                <th data-sort="status">Status</th>
+                                <th data-sort="reagendamento">Reagendamento?</th>
+                                <th data-sort="valor">Valor</th>
+                                <th data-sort="pago">Pago?</th>
+                                <th data-sort="valorPago">Valor Pago</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agendamentos-tbody">
+                            <tr>
+                                <td colspan="13" class="text-center">Nenhuma pesquisa realizada ainda.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="limit-container" class="d-flex flex-row justify-content-between align-items-center mt-2">
+                    <div id="contador-registros">
+                        <span class="text-muted">Total de registros: 0</span>
                     </div>
-
-                    <div id="limit-container" class="d-flex flex-row justify-content-between align-items-center mt-2">
-                        <div id="contador-registros">
-                            <span class="text-muted">Total de registros: 0</span>
-                        </div>
-                        <div id="limitador-registros" class="mb-2 d-flex flex-row align-items-center justify-content-center gap-2">
-                            <label for="limit-select" class="form-label mb-0">Mostrar</label>
-                            <select id="limit-select" class="form-select form-select-sm" style="width: auto;">
-                                <option value="10" selected>10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
+                    <div id="limitador-registros" class="mb-2 d-flex flex-row align-items-center justify-content-center gap-2">
+                        <label for="limit-select" class="form-label mb-0">Mostrar</label>
+                        <select id="limit-select" class="form-select form-select-sm" style="width: auto;">
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                     </div>
+                </div>
 
-                    <!-- Accordion para mobile -->
-                    <div id="accordion-container" class="d-lg-none">
-                        <div class="accordion" id="agendamentosAccordion"></div>
-                    </div>
-
-            </div>
-
+                <!-- Accordion para mobile -->
+                <div id="accordion-container" class="d-lg-none">
+                    <div class="accordion" id="agendamentosAccordion"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -188,6 +182,3 @@
 @section('scripts')
     @vite(['resources/js/consultar-agenda/app.js'])
 @endsection
-    
-</body>
-</html>

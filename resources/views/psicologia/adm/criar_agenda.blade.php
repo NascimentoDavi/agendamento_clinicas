@@ -40,8 +40,7 @@
     </div>
 @endif
 
-
-<div class="mx-3 mt-2 mw-100">
+<div class="mx-3 mb-2 mw-100">
 
     <div class="row">
         
@@ -185,6 +184,3 @@
 @section('scripts')
     @vite(['resources/js/criar-agenda/app.js'])
 @endsection
-
-</body>
-</html>
