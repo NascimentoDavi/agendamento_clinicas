@@ -43,7 +43,7 @@
                 </span>
             </x-page-title>
 
-            <div class="col-12 shadow-lg shadow-dark px-4 pt-4 bg-body-tertiary rounded">
+            <div class="col-12 shadow-lg shadow-dark px-4 pt-2 bg-body-tertiary rounded">
             
                 <!-- FORM DE FILTRO -->
                 <form id="search-form" class="w-100">
