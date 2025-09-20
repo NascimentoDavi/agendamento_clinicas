@@ -14,7 +14,7 @@ if (codSusCheck) {
         if (this.checked) {
             codSusDiv.innerHTML = `
                 <label for="cod-sus-input" class="form-label">Cód. SUS <small class="text-muted">(CNS)</small></label>
-                <input type="text" class="form-control" name="COD_SUS" id="cod-sus-input" placeholder="000-0000-0000-0000">`;
+                <input type="text" class="form-control" name="COD_SUS" id="cod-sus-input" placeholder="0000-0000-0000-0000">`;
             
             document.getElementById('cod-sus-input').addEventListener('input', function () {
                 let value = this.value.replace(/\D/g, '').slice(0, 15);

@@ -139,7 +139,26 @@ class ServicoController extends Controller
         $servicos = $query->orderBy('ID_SERVICO_CLINICA', 'desc')->get();
 
         return $servicos;
-    } 
+    }
+
+    public function getDisciplinaById(Request $request)
+    {
+        $id = $request->input('id');
+
+        if (!$id) {
+            return response()->json(['error' => 'ID do serviço não informado'], 400);
+        }
+
+        $servico = FaesaClinicaServico::where('ID_SERVICO_CLINICA', $id)
+            ->select('DISCIPLINA')
+            ->first();
+
+        if (!$servico) {
+            return response()->json(['error' => 'Serviço não encontrado'], 404);
+        }
+
+        return response()->json(['disciplina' => $servico->DISCIPLINA]);
+    }
 
     // RETORNA SERVIÇO PELO NOME
     public function getServicoByName(string|null $request)
@@ -169,71 +188,71 @@ class ServicoController extends Controller
     }
 
     // ATUALIZAÇÃO DE SERVIÇO
-public function atualizarServico(Request $request, $id)
-{
-    $input = $request->all();
+    public function atualizarServico(Request $request, $id)
+    {
+        $input = $request->all();
 
-    if (isset($input['COD_INTERNO_SERVICO_CLINICA'])) {
-        $cod = $input['COD_INTERNO_SERVICO_CLINICA'];
-        if ($cod === '--' || trim($cod) === '') {
-            $input['COD_INTERNO_SERVICO_CLINICA'] = null;
+        if (isset($input['COD_INTERNO_SERVICO_CLINICA'])) {
+            $cod = $input['COD_INTERNO_SERVICO_CLINICA'];
+            if ($cod === '--' || trim($cod) === '') {
+                $input['COD_INTERNO_SERVICO_CLINICA'] = null;
+            }
         }
+        $request->replace($input);
+
+        $validator = Validator::make($request->all(), [
+            'SERVICO_CLINICA_DESC' => 'required|string|max:255',
+            'DISCIPLINA' => 'nullable|string|max:50',
+            'VALOR_SERVICO' => 'nullable',
+            'OBSERVACAO' => 'nullable|string|max:500',
+            'TEMPO_RECORRENCIA_MESES' => 'nullable|integer|min:0|max:6',
+        ], [
+            'SERVICO_CLINICA_DESC.required' => 'Informe o nome do Serviço antes de prosseguir.',
+            'SERVICO_CLINICA_DESC.string' => 'O nome do Serviço deve ser um texto.',
+            'SERVICO_CLINICA_DESC.max' => 'O nome do Serviço não pode ter mais de 255 caracteres.',
+            'DISCIPLINA.string' => 'A Disciplina deve ser um texto.',
+            'DISCIPLINA.max' => 'A Disciplina não pode ter mais de 50 caracteres.',
+            'VALOR_SERVICO.numeric' => 'O Valor do Serviço deve ser um número válido.',
+            'OBSERVACAO.string' => 'A Observação deve ser um texto.',
+            'OBSERVACAO.max' => 'A Observação não pode ter mais de 500 caracteres.',
+            'TEMPO_RECORRENCIA_MESES.integer' => 'O Tempo de Recorrência deve ser um número inteiro.',
+            'TEMPO_RECORRENCIA_MESES.min' => 'O Tempo de Recorrência deve ser maior ou igual a 0.',
+            'TEMPO_RECORRENCIA_MESES.max' => 'O Tempo de Recorrência deve ser menor ou igual a 6 meses.',
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 422);
+        }
+
+        $validated = $validator->validated();
+
+        if (isset($validated['VALOR_SERVICO'])) {
+            $valor = str_replace(',', '.', $validated['VALOR_SERVICO']);
+            $validated['VALOR_SERVICO'] = is_numeric($valor) ? (float)$valor : null;
+        }
+
+        $servico = FaesaClinicaServico::find($id);
+        if (!$servico) {
+            return response()->json(['message' => 'Serviço não encontrado'], 404);
+        }
+
+        $clinicaId = $servico->ID_CLINICA;
+
+        // Duplicidade nome
+        if (FaesaClinicaServico::where('SERVICO_CLINICA_DESC', $validated['SERVICO_CLINICA_DESC'])
+            ->where('ID_CLINICA', $clinicaId)
+            ->where('ID_SERVICO_CLINICA', '!=', $id)
+            ->exists()
+        ) {
+            return response()->json(['message' => 'Já existe um serviço com este nome nesta clínica.'], 422);
+        }
+
+
+        $servico->update($validated);
+
+        return response()->json(['message' => 'Serviço atualizado com sucesso']);
     }
-    $request->replace($input);
-
-    $validator = Validator::make($request->all(), [
-        'SERVICO_CLINICA_DESC' => 'required|string|max:255',
-        'DISCIPLINA' => 'nullable|string|max:50',
-        'VALOR_SERVICO' => 'nullable',
-        'OBSERVACAO' => 'nullable|string|max:500',
-        'TEMPO_RECORRENCIA_MESES' => 'nullable|integer|min:0|max:6',
-    ], [
-        'SERVICO_CLINICA_DESC.required' => 'Informe o nome do Serviço antes de prosseguir.',
-        'SERVICO_CLINICA_DESC.string' => 'O nome do Serviço deve ser um texto.',
-        'SERVICO_CLINICA_DESC.max' => 'O nome do Serviço não pode ter mais de 255 caracteres.',
-        'DISCIPLINA.string' => 'A Disciplina deve ser um texto.',
-        'DISCIPLINA.max' => 'A Disciplina não pode ter mais de 50 caracteres.',
-        'VALOR_SERVICO.numeric' => 'O Valor do Serviço deve ser um número válido.',
-        'OBSERVACAO.string' => 'A Observação deve ser um texto.',
-        'OBSERVACAO.max' => 'A Observação não pode ter mais de 500 caracteres.',
-        'TEMPO_RECORRENCIA_MESES.integer' => 'O Tempo de Recorrência deve ser um número inteiro.',
-        'TEMPO_RECORRENCIA_MESES.min' => 'O Tempo de Recorrência deve ser maior ou igual a 0.',
-        'TEMPO_RECORRENCIA_MESES.max' => 'O Tempo de Recorrência deve ser menor ou igual a 6 meses.',
-    ]);
-
-
-    if ($validator->fails()) {
-        return response()->json(['message' => $validator->errors()->first()], 422);
-    }
-
-    $validated = $validator->validated();
-
-    if (isset($validated['VALOR_SERVICO'])) {
-        $valor = str_replace(',', '.', $validated['VALOR_SERVICO']);
-        $validated['VALOR_SERVICO'] = is_numeric($valor) ? (float)$valor : null;
-    }
-
-    $servico = FaesaClinicaServico::find($id);
-    if (!$servico) {
-        return response()->json(['message' => 'Serviço não encontrado'], 404);
-    }
-
-    $clinicaId = $servico->ID_CLINICA;
-
-    // Duplicidade nome
-    if (FaesaClinicaServico::where('SERVICO_CLINICA_DESC', $validated['SERVICO_CLINICA_DESC'])
-        ->where('ID_CLINICA', $clinicaId)
-        ->where('ID_SERVICO_CLINICA', '!=', $id)
-        ->exists()
-    ) {
-        return response()->json(['message' => 'Já existe um serviço com este nome nesta clínica.'], 422);
-    }
-
-
-    $servico->update($validated);
-
-    return response()->json(['message' => 'Serviço atualizado com sucesso']);
-}
 
     // DELETAR SERVIÇO
     public function deletarServico($id)

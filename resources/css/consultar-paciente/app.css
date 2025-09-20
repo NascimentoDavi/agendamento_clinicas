@@ -57,6 +57,41 @@
     min-width: 0;                     /* evita que células imponham largura mínima */
 }
 
+th[data-sort="SEXO_PACIENTE"] {
+    width: 50px;
+}
+
+th[data-sort="STATUS"] {
+    width: 90px;
+}
+
+th[data-sort="DT_NASC_PACIENTE"] {
+    width: 90px;
+}
+
+th[data-sort="FONE_PACIENTE"] {
+    width: 90px;
+}
+
+th[data-sort="NOME_COMPL_PACIENTE"] {
+    width: 250px;
+}
+
+th[data-sort="CPF_PACIENTE"] {
+    width: 100px;
+}
+
+#acoes-column {
+    width: 145px;
+}
+
+.table-cards thead th {
+    background-color: #e9ecef;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 2px solid #dee2e6;
+}
+
 /* evitar que os grupos de input do formulário forcem largura mínima */
 #search-form .row > [class*="col-"] {
     min-width: 0; /* permite que colunas encolham */

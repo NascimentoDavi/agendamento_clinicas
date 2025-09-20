@@ -108,7 +108,7 @@
                                     <th data-sort="FONE_PACIENTE">Telefone</th>
                                     <th data-sort="E_MAIL_PACIENTE">Email</th>
                                     <th data-sort="STATUS">Status</th>
-                                    <th>Ações</th>
+                                    <th id="acoes-column">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="pacientes-tbody">
@@ -118,6 +118,7 @@
                             </tbody>
                         </table>
                     </div>
+
                     <div id="limit-container">
                         <div id="contador-registros">
                             <span class="text-muted">Total de registros: 0</span>
@@ -132,9 +133,12 @@
                             </select>
                         </div>
                     </div>
-                </div>
-            </div>
 
+                    <!-- Accordion (somente mobile) -->
+                    <div id="pacientesAccordion" class="accordion d-lg-none mt-3"></div>
+                    
+            </div>
+            
         </div>
     </div>
 

@@ -119,6 +119,7 @@ Route::middleware([AuthMiddleware::class])
     })->name('criarservico_psicologia');
     Route::post('/criar-servico/criar', [ServicoController::class, 'criarServico'])->name('criarServico-Psicologia');
     Route::get('/pesquisar-servico', [ServicoController::class, 'getServicos'])->name('pesquisarServico-Psicologia');
+    Route::get('/pesquisar-disciplina-servico', [ServicoController::class, 'getDisciplinaById'])->name('getDisciplinaById');
     Route::get('/api/buscar-servicos', function () {
         $query = request()->input('query', '');
         $servicos = FaesaClinicaServico::where('SERVICO_CLINICA_DESC', 'like', "%{$query}%")
@@ -158,6 +159,7 @@ Route::middleware([AuthMiddleware::class])
     Route::get('/disciplina/{codigo}', [DisciplinaController::class, 'getDisciplinaByCodigo'])->name('getDisciplinaByCodigo');
 
     Route::get('/listar-alunos', [alunoController::class, 'listAlunos']);
+
 });
 
 

@@ -69,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 document.getElementById('modal-paciente-nome').textContent =
                     `Deseja editar o paciente: ${selectedPaciente.nome}?`;
-                new bootstrap.Modal(document.getElementById('confirmEditModal')).show();
+                    const confirmModalEl = document.getElementById('confirmEditModal');
+                    const confirmModal = bootstrap.Modal.getOrCreateInstance(confirmModalEl);
+                    confirmModal.show();
             });
         });
     }
@@ -97,8 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('editPacienteResponsavelCPF').value = selectedPaciente.cpf_responsavel ?? '';
         document.getElementById('editPacienteStatus').value = selectedPaciente.status ?? '';
 
+        const cpfInput = document.getElementById('editPacienteCPF');
+
+        // Se o paciente estiver ativo, bloqueia edição do CPF
+        if (selectedPaciente.status !== 'Inativo') {
+            cpfInput.setAttribute('readonly', true);
+        } else {
+            cpfInput.removeAttribute('readonly');
+        }
+
         // Abre a modal de edição
-        new bootstrap.Modal(document.getElementById('editPacienteModal')).show();
+        const editModalEl = document.getElementById('editPacienteModal');
+        const editModal = bootstrap.Modal.getOrCreateInstance(editModalEl);
+        editModal.show();
 
         // Inicializa o flatpickr no campo de data
         initializeFlatpickr();
@@ -110,7 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedPaciente = { id: button.dataset.id, nome: button.dataset.nome };
                 document.getElementById('modal-delete-nome').textContent =
                     `Deseja inativar o paciente: ${selectedPaciente.nome}?`;
-                new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+                const deleteModalEl = document.getElementById('confirmDeleteModal');
+                const deleteModal = bootstrap.Modal.getOrCreateInstance(deleteModalEl);
+                deleteModal.show();
             });
         });
     }
@@ -121,7 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedPaciente = { id: button.dataset.id, nome: button.dataset.nome };
                 document.getElementById('modal-ativar-nome').textContent =
                     `Deseja ativar o paciente: ${selectedPaciente.nome}?`;
-                new bootstrap.Modal(document.getElementById('confirmAtivarModal')).show();
+                const ativarModalEl = document.getElementById('confirmAtivarModal');
+                const ativarModal = bootstrap.Modal.getOrCreateInstance(ativarModalEl);
+                ativarModal.show();
             });
         });
     }
@@ -291,7 +308,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('pacientesAccordion');
         if (!container) return;
         container.innerHTML = '';
+
         pacientes.forEach((p, idx) => {
+            const isInativo = p.STATUS === 'Inativo';
+            const btnStatus = isInativo
+                ? `<button type="button" class="btn btn-sm btn-success ativar-btn" 
+                        data-id="${p.ID_PACIENTE}" 
+                        data-nome="${p.NOME_COMPL_PACIENTE ?? 'Paciente'}">
+                        <i class="bi bi-check2"></i>
+                </button>`
+                : `<button type="button" class="btn btn-sm btn-danger excluir-btn" 
+                        data-id="${p.ID_PACIENTE}" 
+                        data-nome="${p.NOME_COMPL_PACIENTE ?? 'Paciente'}">
+                        <i class="bi bi-trash"></i>
+                </button>`;
+
             const item = document.createElement('div');
             item.className = 'accordion-item mb-2';
             item.innerHTML = `
@@ -302,30 +333,78 @@ document.addEventListener('DOMContentLoaded', () => {
                 </h2>
                 <div class="accordion-content">
                     <div class="accordion-body">
-                        <ul class="list-unstyled mb-0">
+                        <ul class="list-unstyled mb-3">
                             <li><strong>Nascimento:</strong> ${formatarDataBR(p.DT_NASC_PACIENTE)}</li>
                             <li><strong>Sexo:</strong> ${p.SEXO_PACIENTE ?? '-'}</li>
                             <li><strong>Telefone:</strong> ${p.FONE_PACIENTE ?? '-'}</li>
                             <li><strong>Email:</strong> ${p.E_MAIL_PACIENTE ?? '-'}</li>
                             <li><strong>Status:</strong> ${p.STATUS ?? '-'}</li>
                         </ul>
+                        <div class="d-flex flex-wrap justify-content-center gap-1">
+                            <button type="button" class="btn btn-sm btn-warning editar-btn" 
+                                data-id="${p.ID_PACIENTE}" 
+                                data-status="${p.STATUS ?? '-'}" 
+                                data-nome="${p.NOME_COMPL_PACIENTE ?? 'Paciente'}"
+                                data-cpf="${p.CPF_PACIENTE ?? ''}"
+                                data-dt_nasc="${p.DT_NASC_PACIENTE ?? ''}"
+                                data-sexo="${p.SEXO_PACIENTE ?? ''}"
+                                data-endereco="${p.ENDERECO ?? ''}"
+                                data-num="${p.END_NUM ?? ''}"
+                                data-complemento="${p.COMPLEMENTO ?? ''}"
+                                data-bairro="${p.BAIRRO ?? ''}"
+                                data-uf="${p.UF ?? ''}"
+                                data-cep="${p.CEP ?? ''}"
+                                data-celular="${p.FONE_PACIENTE ?? ''}"
+                                data-email="${p.E_MAIL_PACIENTE ?? ''}"
+                                data-municipio="${p.MUNICIPIO ?? ''}"
+                                data-nome-responsavel="${p.NOME_RESPONSAVEL ?? ''}"
+                                data-cpf-responsavel="${p.CPF_RESPONSAVEL ?? ''}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary historico-btn" 
+                                data-id="${p.ID_PACIENTE}" 
+                                data-nome="${p.NOME_COMPL_PACIENTE}">
+                                <i class="bi bi-clock-history"></i>
+                            </button>
+                            ${btnStatus}
+                        </div>
                     </div>
                 </div>
             `;
+
             const btn = item.querySelector('.accordion-button');
             const content = item.querySelector('.accordion-content');
             content.style.maxHeight = '0px';
             content.style.overflow = 'hidden';
             content.style.transition = 'max-height 0.3s ease';
+
             btn.addEventListener('click', e => {
                 e.preventDefault();
                 const isOpen = btn.getAttribute('aria-expanded') === 'true';
-                if (isOpen) { content.style.maxHeight = '0px'; btn.classList.add('collapsed'); btn.setAttribute('aria-expanded', 'false'); }
-                else { content.style.maxHeight = content.scrollHeight + 'px'; btn.classList.remove('collapsed'); btn.setAttribute('aria-expanded', 'true'); }
+                if (isOpen) {
+                    content.style.maxHeight = '0px';
+                    btn.classList.add('collapsed');
+                    btn.setAttribute('aria-expanded', 'false');
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    btn.classList.remove('collapsed');
+                    btn.setAttribute('aria-expanded', 'true');
+                }
             });
-            window.addEventListener('resize', () => { if (btn.getAttribute('aria-expanded') === 'true') content.style.maxHeight = content.scrollHeight + 'px'; });
+
+            window.addEventListener('resize', () => {
+                if (btn.getAttribute('aria-expanded') === 'true') {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+
             container.appendChild(item);
         });
+
+        // reativa os mesmos eventos nos botões dentro do accordion
+        ativarEventosEditar();
+        ativarEventosDeletar();
+        ativarEventosAtivar();
     }
 
     // ======== REDIMENSIONAR COLUNAS ========
@@ -365,6 +444,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const editForm = document.getElementById('editPacienteForm');
     if (editForm) editForm.addEventListener('submit', enviarEdicao);
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', enviarExclusao);
+    const confirmAtivarBtn = document.getElementById('confirm-ativar-btn');
+    if (confirmAtivarBtn) confirmAtivarBtn.addEventListener('click', enviarAtivacao);
 
     function enviarEdicao(e) {
         e.preventDefault();
@@ -400,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const cpfLimpo = document.getElementById('editPacienteCPF').value.replace(/[^\d]/g, ''); 
+        const cpfLimpo = document.getElementById('editPacienteCPF').value.replace(/[^\d]/g, '');
 
         const dados = {
             nome: document.getElementById('editPacienteNome').value,
@@ -444,6 +527,30 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Erros de validação:", error.errors); 
             alert(Object.values(error.errors).join("\n")); 
         });
+    }
+
+    function enviarExclusao(e) {
+        e.preventDefault();
+        if (!selectedPaciente || !selectedPaciente.id) return;
+        fetch(`/psicologia/excluir-paciente/${selectedPaciente.id}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+        })
+        .then(response => { if (!response.ok) throw new Error('Erro ao inativar paciente - Paciente com agendamento vinculado'); return response.json(); })
+        .then(data => { bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'))?.hide(); buscarPacientes(); })
+        .catch(error => { console.error(error); alert(error.message); });
+    }
+
+    function enviarAtivacao(e) {
+        e.preventDefault();
+        if (!selectedPaciente || !selectedPaciente.id) return;
+        fetch(`/psicologia/paciente/${selectedPaciente.id}/ativar`, {
+            method: 'GET',
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+        })
+        .then(response => { if (!response.ok) throw new Error('Erro ao ativar paciente'); return response.json(); })
+        .then(data => { bootstrap.Modal.getInstance(document.getElementById('editPacienteModal'))?.hide(); location.reload(); })
+        .catch(error => { console.error(error); });
     }
 
     document.addEventListener('click', function (event) {

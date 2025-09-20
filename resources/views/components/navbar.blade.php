@@ -134,6 +134,33 @@
     }
 }
 
+/* Movimento no link principal */
+.sidebar-link {
+    transition: all 0.3s ease;
+}
+
+.sidebar-link:hover {
+    transform: translateX(5px); /* movimento para direita */
+}
+
+/* Movimento nos sublinks */
+.submenu-link {
+    transition: all 0.3s ease;
+}
+
+.submenu-link:hover {
+    transform: translateX(8px); /* mais destaque no submenu */
+}
+
+/* Ícone seta gira no hover */
+.arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+.link-logout:hover {
+    background-color: rgb(236, 17, 17);
+}
+
 </style>
 
 <nav class="navbar navbar-dark bg-primary d-lg-none fixed-top shadow-sm px-3" style="height: 56px">
@@ -177,8 +204,14 @@
                 <i class="bi bi-chevron-down ms-auto arrow-icon"></i>
             </a>
             <ul class="collapse list-group list-group-flush" id="submenu-agenda">
-                <li><a href="/psicologia/criar-agendamento" class="sidebar-link submenu-link p-2">Criar Agenda</a></li>
-                <li><a href="/psicologia/consultar-agendamento" class="sidebar-link submenu-link p-2">Consultar Agendas</a></li>
+                <li><a href="/psicologia/criar-agendamento" class="sidebar-link submenu-link p-2">
+                    <i class="bi bi-arrow-return-right me-1"></i>
+                    Criar Agenda
+                </a></li>
+                <li><a href="/psicologia/consultar-agendamento" class="sidebar-link submenu-link p-2">
+                    <i class="bi bi-arrow-return-right me-1"></i>
+                    Consultar Agendas
+                </a></li>
             </ul>
         </li>
 
@@ -189,8 +222,18 @@
                 <i class="bi bi-chevron-down ms-auto arrow-icon"></i>
             </a>
             <ul class="collapse list-group list-group-flush" id="submenu-pacientes">
-                <li><a href="/psicologia/criar-paciente" class="sidebar-link submenu-link p-2">Criar Paciente</a></li>
-                <li><a href="/psicologia/consultar-paciente" class="sidebar-link submenu-link p-2">Consultar Pacientes</a></li>
+                <li>
+                    <a href="/psicologia/criar-paciente" class="sidebar-link submenu-link p-2">
+                        <i class="bi bi-arrow-return-right me-1"></i>
+                        Criar Paciente
+                    </a>
+                </li>
+                <li>
+                    <a href="/psicologia/consultar-paciente" class="sidebar-link submenu-link p-2">
+                        <i class="bi bi-arrow-return-right me-1"></i>
+                        Consultar Pacientes
+                    </a>
+                </li>
             </ul>
         </li>
         
@@ -201,9 +244,24 @@
                 <i class="bi bi-chevron-down ms-auto arrow-icon"></i>
             </a>
             <ul class="collapse list-group list-group-flush" id="submenu-config">
-                <li><a href="/psicologia/criar-servico" class="sidebar-link submenu-link p-2">Serviços</a></li>
-                <li><a href="/psicologia/criar-sala" class="sidebar-link submenu-link p-2">Salas</a></li>
-                <li><a href="/psicologia/criar-horario" class="sidebar-link submenu-link p-2">Horários</a></li>
+                <li>
+                    <a href="/psicologia/criar-servico" class="sidebar-link submenu-link p-2">
+                        <i class="bi bi-arrow-return-right me-1"></i>   
+                        Serviços
+                    </a>
+                </li>
+                <li>
+                    <a href="/psicologia/criar-sala" class="sidebar-link submenu-link p-2">
+                        <i class="bi bi-arrow-return-right me-1"></i>
+                        Salas
+                    </a>
+                </li>
+                <li>
+                    <a href="/psicologia/criar-horario" class="sidebar-link submenu-link p-2">
+                        <i class="bi bi-arrow-return-right me-1"></i>
+                        Horários
+                    </a>
+                </li>
             </ul>
         </li>
 

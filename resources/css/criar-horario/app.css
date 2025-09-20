@@ -1,0 +1,20 @@
+body {
+    font-family: "Montserrat", sans-serif;
+}
+.shadow-dark {
+    box-shadow: 0 0.75rem 1.25rem rgba(0,0,0,0.4) !important;
+}
+@keyframes slideDownFadeOut {
+    0%   { transform: translate(-50%, -100%); opacity: 0; }
+    10%  { transform: translate(-50%, 0); opacity: 1; }
+    90%  { transform: translate(-50%, 0); opacity: 1; }
+    100% { transform: translate(-50%, -100%); opacity: 0; }
+}
+.animate-alert {
+    animation: slideDownFadeOut 5s ease forwards;
+    z-index: 1050;
+}
+.modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+}

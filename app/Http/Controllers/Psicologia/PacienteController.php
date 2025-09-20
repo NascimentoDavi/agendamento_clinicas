@@ -25,7 +25,7 @@ class PacienteController extends Controller
         $validatedData = $request->validate([
             'NOME_COMPL_PACIENTE' => 'required|string|max:255',
             'DT_NASC_PACIENTE' => 'nullable|date',
-            'CPF_PACIENTE' => 'required|string|max:14|regex:/^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/',
+            'CPF_PACIENTE' => 'required|string|max:11|min:11|regex:/^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/',
             'SEXO_PACIENTE' => 'required|string|in:M,F,O',
             'CEP' => 'required|string|max:20',
             'ENDERECO' => 'required|string|max:255',
@@ -50,6 +50,8 @@ class PacienteController extends Controller
 
             'CPF_PACIENTE.required' => 'O CPF do paciente é obrigatório.',
             'CPF_PACIENTE.regex' => 'O CPF informado não está em um formato válido.',
+            'CPF_PACIENTE.max' => 'O CPF do paciente deve ter, no máximo, 11 dígitos.',
+            'CPF_PACIENTE.min' => 'O CPF do paciente deve ter, no máximo, 11 dígitos.',
 
             'SEXO_PACIENTE.required' => 'O sexo do paciente é obrigatório.',
             'SEXO_PACIENTE.in' => 'O sexo informado é inválido. Use M, F ou O.',
@@ -139,7 +141,7 @@ class PacienteController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nome'       => 'required|string|max:255',
-            'cpf'        => ['required', 'string', 'max:14', Rule::unique('FAESA_CLINICA_PACIENTE', 'CPF_PACIENTE')->ignore($id, 'ID_PACIENTE')],
+            'cpf'        => ['required', 'string', 'max:11', 'min:11', Rule::unique('FAESA_CLINICA_PACIENTE', 'CPF_PACIENTE')->ignore($id, 'ID_PACIENTE')],
             'dt_nasc'    => ['required','date','date_format:Y-m-d'],
             'sexo'       => 'required|string|in:M,F,O',
             'endereco'   => 'required|string|max:255',
@@ -158,6 +160,8 @@ class PacienteController extends Controller
             'dt_nasc.required' => 'A data de nascimento deve ser fornecida',
             'cpf.required' => 'O CPF do paciente deve ser fornecido',
             'cpf.unique' => 'O CPF do paciente deve ser único, não pode ser igual ao de outro paciente',
+            'cpf.max' => 'O CPF do paciente deve ter, no máximo, 11 dígitos.',
+            'cpf.min' => 'O CPF do paciente deve ter, no mínimo, 11 dígitos.',
             'cep.required' => 'O CEP de paciente deve ser fornecido',
             'celular.required' => 'O número de celular para contato com o paciente deve ser fornecido',
             'num.required' => 'O número do endereço deve ser fornecido',

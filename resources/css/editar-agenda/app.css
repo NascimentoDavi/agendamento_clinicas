@@ -1,0 +1,6 @@
+.card-header h5 { margin-bottom: 0; font-size: 1.1rem; font-weight: 600; }
+.details-grid { display: grid; grid-template-columns: 150px 1fr; gap: 1rem; align-items: center;}
+.details-grid dt { font-weight: 700; color: #555; }
+.details-grid dd { margin-bottom: 0; }
+.card-footer { font-size: 0.8rem; color: #6c757d; }
+.ts-hidden-accessible { display: none; }

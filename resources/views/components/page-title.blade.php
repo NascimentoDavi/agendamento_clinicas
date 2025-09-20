@@ -1,6 +1,6 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<div class="col-12 text-center mb-1 d-none d-md-block page-title-sticky">
+<div class="col-12 text-center mb-2 d-none d-md-block page-title-sticky">
 
     <div class="d-flex flex-row justify-content-between align-items-center">
         
@@ -11,6 +11,8 @@
             <strong id='page-title'></strong>
             
         </p>
+
+        <span id="data-horario" class="d-none d-xxl-inline">alguma mensagem</span>
 
 		<div class="d-flex flex-row gap-2 justify-content-between align-items-center">
 
@@ -115,4 +117,35 @@ function verificaCollapsed() {
         trocaLogo(logoExpandido.src);
     }
 };
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const dataHorarioEl = document.getElementById("data-horario");
+
+    if (!dataHorarioEl) return;
+
+    function atualizarDataHorario() {
+        const now = new Date();
+
+        // Formata data: 19/09/2025
+        const dia = String(now.getDate()).padStart(2, "0");
+        const mes = String(now.getMonth() + 1).padStart(2, "0");
+        const ano = now.getFullYear();
+
+        // Formata hora: 14:35:09
+        const hora = String(now.getHours()).padStart(2, "0");
+        const minuto = String(now.getMinutes()).padStart(2, "0");
+        const segundo = String(now.getSeconds()).padStart(2, "0");
+
+        dataHorarioEl.textContent = `${dia}/${mes}/${ano} ${hora}:${minuto}:${segundo}`;
+    }
+
+    // Atualiza imediatamente
+    atualizarDataHorario();
+
+    // Atualiza a cada segundo
+    setInterval(atualizarDataHorario, 1000);
+});
+
 </script>

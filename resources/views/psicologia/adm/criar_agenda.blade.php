@@ -157,7 +157,7 @@
                     </div>
 
                     <div class="col-md-6 position-relative">
-                         <input type="hidden" name="ID_ALUNO" id="ID_ALUNO">
+                        <input type="hidden" name="ID_ALUNO" id="ID_ALUNO">
                         <label for="select-aluno" class="form-label">Aluno</label>
                         <select id="select-aluno" name="ID_ALUNO" placeholder="Aluno do Atendimento..." autocomplete="off" data-old-id="{{ old('ID_ALUNO') }}"></select>
                         <small id="aluno-count" class="text-muted mt-1 d-block"></small>
